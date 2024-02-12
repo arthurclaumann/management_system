@@ -31,6 +31,8 @@ class Backend():
         self.desconecta_db()
 
 
+
+
     def cadastrar_usuario(self, usuario, senha, confirma_senha, limpa_entry_cadastro):
         self.username_cadastro = usuario
         self.senha_cadastro = senha
@@ -56,6 +58,52 @@ class Backend():
                 limpa_entry_cadastro()
         except:
             messagebox.showerror(title = 'Sistema de Login', message='Erro no processo de cadastramento.')
+            self.desconecta_db()
+
+    def cria_tabela_os(self):
+        self.conecta_db()
+        self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ordem_servico (
+                    os INTEGER NOT NULL,
+                    data DATE NOT NULL, 
+                    cliente TEXT NOT NULL,
+                    carro TEXT NOT NULL,
+                    motorista TEXT NOT NULL,
+                    servico TEXT NOT NULL,
+                    valor FLOAT,
+                    situacao TEXT NOT NULL,
+        );
+        ''')
+
+        self.conn.commit()
+        # print('Tabela criada com sucesso')
+        self.desconecta_db()
+
+
+    def cadastrar_os(self, os, cliente, carro, motorista, servico, valor, situacao):
+        self.os = os
+        # self.data = datetime
+        self.cliente = cliente
+        self.carro = carro
+        self.motorista = motorista
+        self.servico = servico
+        self.valor = valor
+        self.situacao = situacao
+
+
+        self.conecta_db()
+        self.cursor.execute("""INSERT INTO ordem_servico (os, data, cliente, carro, motorista, servico, valor) VALUES(:os, :data, :cliente, :carro, :motorista, :servico, :valor)
+                            """,{'os': self.os, 'data': self.data, 'cliente': self.cliente, 'carro': self.carro, 'motorista': self.motorista, 'servico': self.servico, 'valor': self.valor, 'situacao': self.situacao})
+
+        try:
+            if(self.os ==""):
+                messagebox.showerror(title ='', message='Preencha o número da ordem de serviço!')
+            else:
+                self.conn.commit()
+                messagebox.showinfo(title='', message = 'Ordem de serviço cadastrada com sucesso.')
+                self.desconecta_db()
+        except:
+            messagebox.showerror(title = '', message='Erro no processo de cadastramento.')
             self.desconecta_db()
 
 

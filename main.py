@@ -21,6 +21,7 @@ class Application(ctk.CTk):
 
         # self.menu.tela_menu()
         self.backend.cria_tabela()
+        self.backend.cria_tabela_os()
 
     def tema(self):
         # definindo a aparência e cor do tema
@@ -29,7 +30,7 @@ class Application(ctk.CTk):
 
     def configuracoes_janela_inicial(self):
     # Criando e configurando a janela
-        self.geometry("800x500")
+        self.geometry("1080x600")
         self.resizable(False, False) # para evitar que altere o tamanho e os objetos internos percam seu tamanho
 
 
