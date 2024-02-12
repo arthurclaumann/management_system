@@ -1,5 +1,6 @@
 import sqlite3
 from tkinter import messagebox
+from datetime import date
 
 class Backend():
     def conecta_db(self):
@@ -64,14 +65,14 @@ class Backend():
         self.conecta_db()
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS ordem_servico (
-                    os INTEGER NOT NULL,
+                    os TEXT NOT NULL,
                     data DATE NOT NULL, 
                     cliente TEXT NOT NULL,
                     carro TEXT NOT NULL,
                     motorista TEXT NOT NULL,
                     servico TEXT NOT NULL,
                     valor FLOAT,
-                    situacao TEXT NOT NULL,
+                    situacao TEXT NOT NULL DEFAULT 'Pendente'
         );
         ''')
 
@@ -82,7 +83,7 @@ class Backend():
 
     def cadastrar_os(self, os, cliente, carro, motorista, servico, valor, situacao):
         self.os = os
-        # self.data = datetime
+        self.data = date.today()
         self.cliente = cliente
         self.carro = carro
         self.motorista = motorista
@@ -92,7 +93,7 @@ class Backend():
 
 
         self.conecta_db()
-        self.cursor.execute("""INSERT INTO ordem_servico (os, data, cliente, carro, motorista, servico, valor) VALUES(:os, :data, :cliente, :carro, :motorista, :servico, :valor)
+        self.cursor.execute("""INSERT INTO ordem_servico (os, data, cliente, carro, motorista, servico, valor, situacao) VALUES(:os, :data, :cliente, :carro, :motorista, :servico, :valor, :situacao)
                             """,{'os': self.os, 'data': self.data, 'cliente': self.cliente, 'carro': self.carro, 'motorista': self.motorista, 'servico': self.servico, 'valor': self.valor, 'situacao': self.situacao})
 
         try:

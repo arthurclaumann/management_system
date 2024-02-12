@@ -93,11 +93,12 @@ class OS():
         # Veículo
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Veiculo', font = ('Roboto', 14))
         self.lbtitle.grid(row = 3, column = 0, padx = 5, pady = 5)
-
-        self.veiculo_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
+        
+        self.veiculo_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, justify = 'center',values=["PLD-8032 TOYOTA COROLLA", "EZY 4G48 SPRINTER MARTM5"], width=250, font=('Roboto', 12), corner_radius=12)
+        # self.veiculo_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
         self.veiculo_os_entry.grid(row = 3, column = 1, padx = 5, pady = 5)
 
-        # Motorista
+        # Motorista --- Criar função para obter motoristas do db
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Motorista', font = ('Roboto', 14))
         self.lbtitle.grid(row = 4, column = 0, padx = 5, pady = 5)
 
@@ -111,17 +112,36 @@ class OS():
         self.servico_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
         self.servico_os_entry.grid(row = 5, column = 1, padx = 5, pady = 5)
 
-        # VALOR DA OS
+        # Valor OS
+        self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Valor ordem de serviço', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 6, column = 0, padx = 5, pady = 5)
+  
+        self.valor_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
+        self.valor_os_entry.grid(row = 6, column = 1, padx = 5, pady = 5)
+
         # SITUAÇÂO DA OS - Fechada ou aberta
+        self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Situação:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 7, column = 0, padx = 5, pady = 5)
+        
+        self.situacao_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, values=["Aberta", "Fechada"], width=250, font=('Roboto', 12), corner_radius=12)
+        self.situacao_os_entry.grid(row = 7, column = 1, padx = 5, pady = 5)
 
         # Botão Registrar
         # irá se comunicar com a base de dados e inserir os dados na base de dados
-        self.btn_registrar_os = ctk.CTkButton(master =self.frame_cria_os, text= 'Registrar', width = 150, font=('Roboto', 12), corner_radius= 20, command = lambda: self.backend.cadastrar_os(self.numero_os_entry,))                       
-        self.btn_registrar_os.grid(row = 8, column = 1, padx = 5, pady = 10)
+        self.btn_registrar_os = ctk.CTkButton(master =self.frame_cria_os, text= 'Registrar', width = 150, font=('Roboto', 12), corner_radius= 20, command = lambda: self.backend.cadastrar_os(
+            self.numero_os_entry.get(),
+            self.cliente_os_entry.get(),
+            self.veiculo_os_entry.get(), 
+            self.motorista_os_entry.get(),
+            self.servico_os_entry.get(),   
+            self.valor_os_entry.get(),   
+            self.situacao_os_entry.get(),))
+                            
+        self.btn_registrar_os.grid(row = 9, column = 1, padx = 1, pady = 10)
 
         # Botão voltar
         self.btn_voltar_cria_os = ctk.CTkButton(master =self.frame_cria_os, text= 'Voltar', width = 150, font=('Roboto', 12), corner_radius= 20, command = lambda: self.voltar_tela_os(self.frame_cria_os))                       
-        self.btn_voltar_cria_os.grid(row = 8, column = 2, padx = 5, pady = 10)
+        self.btn_voltar_cria_os.grid(row = 10, column = 1, padx = 1, pady = 10)
         # self.os_num = os_num_entry
 
 
