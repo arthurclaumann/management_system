@@ -19,3 +19,13 @@
   
         self.servico_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= 'Serviço', width = 300, font=('Roboto', 12),corner_radius=15)
         self.servico_os_entry.grid(row = 5, column = 1, padx = 5, pady = 5)
+
+
+
+                # # Botão voucher_despesa
+        # self.btn_voucher_despesa = ctk.CTkButton(master = self.frame_os, text= 'Voucher/Despesa', width = 200, font=('Roboto', 14), corner_radius= 20, fg_color = 'green')                             
+        # self.btn_voucher_despesa.grid(row = 3, column = 0, padx = 10, pady = 10)
+
+        # # Botão vouchers_emitidos
+        # self.btn_voucher_emitido = ctk.CTkButton(master = self.frame_os, text= 'Vouchers emitidos', width = 200, font=('Roboto', 14), corner_radius= 20, fg_color = 'green')                             
+        # self.btn_voucher_emitido.grid(row = 4, column = 0, padx = 10, pady = 10)

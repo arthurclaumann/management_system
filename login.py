@@ -12,12 +12,12 @@ class Login():
 
     def tela_login(self):
         # Criando o título
-        self.title = ctk.CTkLabel(self.master, text = 'Sistema de Gerenciamento\n', font = ('Roboto', 18))
-        self.title.grid(row = 0, column = 10, padx = 10, pady = 30)
+        # self.title = ctk.CTkLabel(self.master, text = 'Sistema de Gerenciamento\nArca Brasil', font = ('Roboto', 18))
+        # self.title.grid(row = 0, column = 0, padx = 5, pady = 30)
         
         ### self.frame_login
         self.frame_login = ctk.CTkFrame(self.master, width = 400, height = 500)
-        self.frame_login.place(x = 350, y = 30)
+        self.frame_login.place(x = 400, y = 30)
 
         # frame_login widgets
         self.lbtitle = ctk.CTkLabel(master = self.frame_login, text = 'Faça seu Login', font = ('Roboto', 18))
@@ -31,9 +31,9 @@ class Login():
         self.pwd_entry = ctk.CTkEntry(master = self.frame_login, placeholder_text= 'Senha', show = '*', width = 300, font=('Roboto', 14),corner_radius=20)
         self.pwd_entry.grid(row = 2, column = 0, padx = 10, pady = 10)
     
-        # Ver senha
-        self.ver_senha = ctk.CTkCheckBox(master = self.frame_login, text = 'Mostrar senha' , font=('Roboto', 12), corner_radius=15)
-        self.ver_senha.grid(row = 3, column = 0, padx = 10, pady = 10)
+        # # Ver senha
+        # self.ver_senha = ctk.CTkCheckBox(master = self.frame_login, text = 'Mostrar senha' , font=('Roboto', 12), corner_radius=15)
+        # self.ver_senha.grid(row = 3, column = 0, padx = 10, pady = 10)
 
         # Botão login
         self.btn_login = ctk.CTkButton(master = self.frame_login, text= 'Fazer login', width = 300, font=('Roboto', 14), corner_radius= 20, command=lambda: self.backend.verifica_login(self.username_entry.get(),self.pwd_entry.get(), self.limpa_entry_login, self.remover_tela_login, self.menu.tela_menu))

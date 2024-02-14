@@ -31,7 +31,7 @@ class Application(ctk.CTk):
     def configuracoes_janela_inicial(self):
     # Criando e configurando a janela
         self.geometry("1080x600")
-        self.resizable(False, False) # para evitar que altere o tamanho e os objetos internos percam seu tamanho
+        self.resizable(True, True) # para evitar que altere o tamanho e os objetos internos percam seu tamanho
 
 
 if __name__ == '__main__':

@@ -32,8 +32,6 @@ class Backend():
         self.desconecta_db()
 
 
-
-
     def cadastrar_usuario(self, usuario, senha, confirma_senha, limpa_entry_cadastro):
         self.username_cadastro = usuario
         self.senha_cadastro = senha
@@ -61,11 +59,12 @@ class Backend():
             messagebox.showerror(title = 'Sistema de Login', message='Erro no processo de cadastramento.')
             self.desconecta_db()
 
+
     def cria_tabela_os(self):
         self.conecta_db()
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS ordem_servico (
-                    os TEXT NOT NULL,
+                    os INT NOT NULL,
                     data DATE NOT NULL, 
                     cliente TEXT NOT NULL,
                     carro TEXT NOT NULL,
@@ -81,7 +80,7 @@ class Backend():
         self.desconecta_db()
 
 
-    def cadastrar_os(self, os, cliente, carro, motorista, servico, valor, situacao):
+    def cadastrar_os_db(self, os, cliente, carro, motorista, servico, valor, situacao):
         self.os = os
         self.data = date.today()
         self.cliente = cliente
@@ -131,4 +130,51 @@ class Backend():
         except:
             messagebox.showerror(title = 'Sistema de Login', message= 'Usuário e/ou senha incorretos.')
 
+
+    def ver_os_aberta_db(self):
+        self.conecta_db()
+        self.cursor.execute("SELECT * FROM ordem_servico WHERE situacao='Aberta' or situacao='Pendente'")
+
+        try:
+
+            self.verifica_dados = self.cursor.fetchall()
+
+            if self.verifica_dados == '':
+                messagebox.showinfo(title = '', message='Nenhuma ordem de serviço aberta')
+                self.desconecta_db()
+            else:
+                self.desconecta_db()
+                return self.verifica_dados
+        except:
+            messagebox.showerror(message='Ainda não há ordem de serviço aberta') 
+
+    def ver_os_fechada_db(self):
+        self.conecta_db()
+
+        self.cursor.execute("SELECT * FROM ordem_servico WHERE situacao='Fechada'")
+
+        self.verifica_dados = self.cursor.fetchall()
+
+        if self.verifica_dados == '':
+            messagebox.showinfo(title = '', message='Nenhuma ordem de serviço fechada')
+            self.desconecta_db()
+        else:
+            self.desconecta_db()
+            return self.verifica_dados
+            
+
+    def buscar_os_db(self, os):
+        self.conecta_db()
+
+        self.cursor.execute("SELECT * FROM ordem_servico WHERE os=:os", {'os': os})
+
+        self.verifica_dados = self.cursor.fetchall()
+
+        if self.verifica_dados == '':
+            messagebox.showinfo(title = '', message='Nenhuma ordem de serviço encontrada')
+            self.desconecta_db()
+        else:
+            self.desconecta_db()
+            return self.verifica_dados
+        
         
