@@ -12,13 +12,11 @@ class App_menu():
 
 
     def tela_menu(self):
-        # remover formulário de login
-        # self.login.remover_tela_login() - irei utilizar essa função tela_menu no próprio módulo login
-
-        
         ### self.frame_menu
         self.frame_menu = ctk.CTkFrame(self.master, width = 400, height = 500)
-        self.frame_menu.place(x = 400, y = 30)
+        # self.frame_menu.place(x = 400, y = 30)
+        self.frame_menu.grid_columnconfigure(0, weight=1)
+        self.frame_menu.grid(row = 0,  column = 0, pady = 30)
 
         # frame_menu widgets
         self.lbtitle = ctk.CTkLabel(master = self.frame_menu, text = 'Selecione uma opção:', font = ('Roboto', 18))
@@ -45,5 +43,5 @@ class App_menu():
         self.btn_os.grid(row = 6, column = 0, padx = 10, pady = 10)
 
     def limpa_menu(self):
-        self.frame_menu.place_forget()        
+        self.frame_menu.grid_remove()        
      

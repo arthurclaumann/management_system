@@ -70,7 +70,10 @@ class Backend():
                     carro TEXT NOT NULL,
                     motorista TEXT NOT NULL,
                     servico TEXT NOT NULL,
-                    valor FLOAT,
+                    receita FLOAT,
+                    cod_receita INT,
+                    despesa FLOAT,
+                    cod_despesa INT,
                     situacao TEXT NOT NULL DEFAULT 'Pendente'
         );
         ''')
@@ -80,24 +83,24 @@ class Backend():
         self.desconecta_db()
 
 
-    def cadastrar_os_db(self, os, cliente, carro, motorista, servico, valor, situacao):
+    def cadastrar_os_aberta_db(self, os, data, cliente, carro, motorista, servico, situacao):
         self.os = os
-        self.data = date.today()
+        self.data = data
         self.cliente = cliente
         self.carro = carro
         self.motorista = motorista
         self.servico = servico
-        self.valor = valor
+        # self.valor = valor
         self.situacao = situacao
 
 
         self.conecta_db()
-        self.cursor.execute("""INSERT INTO ordem_servico (os, data, cliente, carro, motorista, servico, valor, situacao) VALUES(:os, :data, :cliente, :carro, :motorista, :servico, :valor, :situacao)
-                            """,{'os': self.os, 'data': self.data, 'cliente': self.cliente, 'carro': self.carro, 'motorista': self.motorista, 'servico': self.servico, 'valor': self.valor, 'situacao': self.situacao})
+        self.cursor.execute("""INSERT INTO ordem_servico (os, data, cliente, carro, motorista, servico, situacao) VALUES(:os, :data, :cliente, :carro, :motorista, :servico, :situacao)
+                            """,{'os': self.os, 'data': self.data, 'cliente': self.cliente, 'carro': self.carro, 'motorista': self.motorista, 'servico': self.servico, 'situacao': self.situacao})
 
         try:
-            if(self.os ==""):
-                messagebox.showerror(title ='', message='Preencha o número da ordem de serviço!')
+            if(self.os =="" or self.data =="" or self.cliente =="" or self.carro =="" or self.motorista =="" or self.motorista ==''):
+                messagebox.showerror(title ='', message='Preencha todos os dados!')
             else:
                 self.conn.commit()
                 messagebox.showinfo(title='', message = 'Ordem de serviço cadastrada com sucesso.')

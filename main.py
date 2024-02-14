@@ -32,7 +32,7 @@ class Application(ctk.CTk):
     # Criando e configurando a janela
         self.geometry("1080x600")
         self.resizable(True, True) # para evitar que altere o tamanho e os objetos internos percam seu tamanho
-
+        self.grid_columnconfigure(0, weight=1)
 
 if __name__ == '__main__':
     app = Application()

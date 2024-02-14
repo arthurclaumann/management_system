@@ -17,7 +17,9 @@ class Login():
         
         ### self.frame_login
         self.frame_login = ctk.CTkFrame(self.master, width = 400, height = 500)
-        self.frame_login.place(x = 400, y = 30)
+        # self.frame_login.place(x = 400, y = 30)
+        self.frame_login.grid_columnconfigure(0, weight=1)
+        self.frame_login.grid(row = 0,  column = 0, pady = 30)
 
         # frame_login widgets
         self.lbtitle = ctk.CTkLabel(master = self.frame_login, text = 'Faça seu Login', font = ('Roboto', 18))
@@ -52,7 +54,9 @@ class Login():
 
         ### frame formulário cadastro
         self.frame_cadastro = ctk.CTkFrame(self.master, width = 400, height = 500)
-        self.frame_cadastro.place(x = 350, y = 30)
+        self.frame_cadastro.grid_columnconfigure(0, weight=1)
+        self.frame_cadastro.grid(row = 0,  column = 0, pady = 30)
+        # self.frame_cadastro.place(x = 350, y = 30)
 
 
         # frame_cadastro widgets
@@ -98,6 +102,6 @@ class Login():
         self.pwd_entry.delete(0, END)
 
     def remover_tela_login(self):
-        self.frame_login.place_forget()        
+        self.frame_login.grid_remove()        
 
     

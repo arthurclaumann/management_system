@@ -1,3 +1,44 @@
+0. Frame
+
+self.frame_os = ctk.CTkFrame(self.master, width = 400, height = 500)
+self.frame_os.place(x = 400, y = 30)
+
+0.1. scroll_frame
+self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_abertas, width = 715, height = 300)
+            self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)
+
+###             widgets         ###
+
+1. Label
+
+self.lbtitle = ctk.CTkLabel(master = self.frame_os, text = 'Ordem de Serviço', font = ('Roboto', 14))
+self.lbtitle.grid(row = 0, column = 0, padx = 10, pady = 10)     
+
+
+2. Botão
+
+self.btn_os = ctk.CTkButton(master = self.frame_os, text= 'Criar ordem de serviço', width = 300, font=('Roboto', 12), corner_radius= 20, command = self.cria_os)                           
+self.btn_os.grid(row = 2, column = 0, padx = 10, pady = 10)
+
+
+3. Entrada de dados
+ self.cliente_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
+        self.cliente_os_entry.grid(row = 1, column = 1, padx = 5, pady = 10)
+
+
+4. CTkComboBox
+
+self.situacao_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, values=["Aberta", "Fechada"], width=250, font=('Roboto', 12), corner_radius=12)
+
+
+5. Tabela
+
+table = CTkTable(master= self.scroll_frame, values=os_abertas, height=30, width=40)
+
+
+
+
+
 
         # Veículo
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Veiculo', font = ('Roboto', 18))
