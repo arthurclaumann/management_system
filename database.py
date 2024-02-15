@@ -166,18 +166,22 @@ class Backend():
             return self.verifica_dados
             
 
-    def buscar_os_db(self, os):
-        self.conecta_db()
+    def filtro_db_os(self, coluna, valor, situacao):
+        try:
+            self.conecta_db()
 
-        self.cursor.execute("SELECT * FROM ordem_servico WHERE os=:os", {'os': os})
+            self.cursor.execute(f"SELECT * FROM ordem_servico WHERE {coluna}=:valor AND situacao =:situacao", {'valor': valor, 'situacao': situacao})
 
-        self.verifica_dados = self.cursor.fetchall()
+            self.verifica_dados = self.cursor.fetchall()
 
-        if self.verifica_dados == '':
-            messagebox.showinfo(title = '', message='Nenhuma ordem de serviço encontrada')
+            if not self.verifica_dados:
+                messagebox.showinfo(title='', message='Nenhuma ordem de serviço encontrada')
+                return None
+            else:
+                return self.verifica_dados
+        except Exception as e:
+            print(f"Error: {e}")
+        finally:
             self.desconecta_db()
-        else:
-            self.desconecta_db()
-            return self.verifica_dados
         
         

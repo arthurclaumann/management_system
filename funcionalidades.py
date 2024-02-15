@@ -128,7 +128,7 @@ class OS():
         self.btn_registrar_os.grid(row = 9, column = 1, padx = 1, pady = 10)
 
         # Botão voltar
-        self.btn_voltar_cria_os = ctk.CTkButton(master =self.frame_cria_os, text= 'Voltar', width = 150, font=('Roboto', 12), corner_radius= 20, command = lambda: self.voltar_tela_os(self.frame_cria_os))                       
+        self.btn_voltar_cria_os = ctk.CTkButton(master =self.frame_cria_os, text= 'Voltar', width = 150, font=('Roboto', 12), corner_radius= 20, command = lambda: self.voltar_tela_os(self.frame_cria_os, self.tela_os))                       
         self.btn_voltar_cria_os.grid(row = 10, column = 1, padx = 1, pady = 10)
 
 
@@ -154,24 +154,24 @@ class OS():
             table.grid(row=1, column=0, padx=0, pady=20)
 
             # Seleção:::
-            self.lbtitle = ctk.CTkLabel(master = self.frame_os_fechada, text = 'Selecionar:', font = ('Roboto', 14))
+            self.lbtitle = ctk.CTkLabel(master = self.frame_os_abertas, text = 'Selecionar:', font = ('Roboto', 14))
             self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 0)
 
-            self.selecionar_options_filtro = ctk.CTkOptionMenu(master = self.frame_os_fechada, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 225, font=('Roboto', 12),corner_radius=15)
+            self.selecionar_options_filtro = ctk.CTkOptionMenu(master = self.frame_os_abertas, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 225, font=('Roboto', 12),corner_radius=15)
             self.selecionar_options_filtro.grid(row = 4, column = 0, padx = 0, pady = 5)
             
-            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_fechada, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
+            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_abertas, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
             self.selecionar_entry.grid(row = 5, column = 0, padx = 0, pady = 5)
 
-            # Botão buscar
-            self.btn_buscar = ctk.CTkButton(master = self.frame_os_abertas, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(self.frame_os_abertas, self.selecionar_os_entry.get())), fg_color='gray')                       
-            self.btn_buscar.grid(row = 5, column = 0, padx = 5, pady = 5)
+              # Botão buscar
+            self.btn_buscar = ctk.CTkButton(master = self.frame_os_abertas, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(self.frame_os_abertas, self.selecionar_options_filtro, self.selecionar_entry,'Aberta', self.ver_os_aberta)), fg_color='gray')                       
+            self.btn_buscar.grid(row = 6, column = 0, padx = 5, pady = 5)
 
         except:
             messagebox.showerror(message='Ainda não há ordens de serviço abertas.')
 
         # Botão voltar
-        self.btn_voltar = ctk.CTkButton(master = self.frame_os_abertas, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_abertas)))                       
+        self.btn_voltar = ctk.CTkButton(master = self.frame_os_abertas, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_abertas, self.tela_os)))                       
         self.btn_voltar.grid(row = 10, column = 0, padx = 5, pady = 10)
 
 
@@ -208,22 +208,22 @@ class OS():
             self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_fechada, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
             self.selecionar_entry.grid(row = 5, column = 0, padx = 0, pady = 5)
             # Botão buscar
-            self.btn_buscar = ctk.CTkButton(master = self.frame_os_fechada, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(self.frame_os_fechada, self.selecionar_os_entry.get())), fg_color='gray')                       
+            self.btn_buscar = ctk.CTkButton(master = self.frame_os_fechada, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(self.frame_os_fechada, self.selecionar_options_filtro, self.selecionar_entry, 'Fechada', self.ver_os_fechada)), fg_color='gray')                       
             self.btn_buscar.grid(row = 6, column = 0, padx = 5, pady = 5)
 
         except:
             messagebox.showerror(message='Ainda não há ordens de serviço fechadas.')
 
         # Botão voltar
-        self.btn_voltar = ctk.CTkButton(master = self.frame_os_fechada, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_fechada)))                       
+        self.btn_voltar = ctk.CTkButton(master = self.frame_os_fechada, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_fechada, self.tela_os)))                       
         self.btn_voltar.grid(row = 7, column = 0, padx = 5, pady = 30)
 
 
-    def selecionar_os(self, frame, os):
+    def selecionar_os(self, frame, criterio, valor, situacao, frame_anterior):
         # Botão para buscar
-        os_info = self.buscar_os(os)
-
         self.limpa_frame(frame)
+        resultado_filtro = self.filtro_registros_os(criterio, valor, situacao)
+
 
         ### self.frame_os_selecionada
         self.frame_os_selecionada = ctk.CTkFrame(self.master, width = 450, height = 550)
@@ -236,20 +236,39 @@ class OS():
         self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
 
         try:
-            table = CTkTable(master=  self.frame_os_selecionada, values= os_info, height=30, width=40)
+            table = CTkTable(master=  self.frame_os_selecionada, values= resultado_filtro, height=30, width=40)
             
             table.grid(row=1, column=0, padx=0, pady=20)
         except:
             messagebox.showerror(message='Ordem de serviço não encontrada!')
 
         # Botão voltar
-        self.btn_voltar = ctk.CTkButton(master = self.frame_os_selecionada, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_selecionada)))                       
+        self.btn_voltar = ctk.CTkButton(master = self.frame_os_selecionada, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_selecionada, frame_anterior)))                       
         self.btn_voltar.grid(row = 10, column = 0, padx = 5, pady = 10)     
 
 
-    def buscar_os(self, os):
-        os_info = self.backend.buscar_os_db(os)
-        return os_info
+    def filtro_registros_os(self, selecao, valor, situacao):
+        criterio = selecao.get()
+        valor = valor.get()
+
+        # Mapeia o critério selecionado para a coluna correspondente no banco de dados
+        mapeamento_colunas = {
+        'Ordem de serviço': 'os',
+        'Data': 'data',
+        'Cliente': 'cliente',
+        'Carro': 'carro',
+        'Motorista': 'motorista'}
+
+        if criterio in mapeamento_colunas:
+            coluna = mapeamento_colunas[criterio]
+        else:
+            messagebox.showerror(message='Critério inválido.')
+        
+        # Faz a busca SQL no banco de dados
+        resultado_busca = self.backend.filtro_db_os(coluna, valor, situacao)
+
+        return resultado_busca
+
     # Criar self.limpa_os
 
     def voltar_menu(self):
@@ -260,9 +279,9 @@ class OS():
             self.btn_voltar.destroy()
 
 
-    def voltar_tela_os(self, frame):
-        frame.grid_remove()
-        self.tela_os()  # Assuming you're going back to the menu screen, adjust as needed
+    def voltar_tela_os(self, frame_atual, frame_anterior):
+        frame_atual.grid_remove()
+        frame_anterior()  # Assuming you're going back to the menu screen, adjust as needed
         # Remove the previous "Voltar" button if it exists
 
 
