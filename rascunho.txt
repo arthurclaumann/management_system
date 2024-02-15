@@ -1,8 +1,8 @@
 0. Frame
 
 self.frame_os = ctk.CTkFrame(self.master, width = 400, height = 500)
-self.frame_os.place(x = 400, y = 30)
-
+            self.frame_os_abertas.grid_columnconfigure(0, weight=1)
+            self.frame_os_abertas.grid(row = 0,  column = 0, pady = 30)
 0.1. scroll_frame
 self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_abertas, width = 715, height = 300)
             self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)

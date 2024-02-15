@@ -64,7 +64,8 @@ class Backend():
         self.conecta_db()
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS ordem_servico (
-                    os INT NOT NULL,
+                    os INTEGER PRIMARY KEY AUTOINCREMENT,
+                    situacao TEXT NOT NULL DEFAULT 'Aberta',
                     data DATE NOT NULL, 
                     cliente TEXT NOT NULL,
                     carro TEXT NOT NULL,
@@ -73,8 +74,7 @@ class Backend():
                     receita FLOAT,
                     cod_receita INT,
                     despesa FLOAT,
-                    cod_despesa INT,
-                    situacao TEXT NOT NULL DEFAULT 'Pendente'
+                    cod_despesa INT
         );
         ''')
 
@@ -83,8 +83,7 @@ class Backend():
         self.desconecta_db()
 
 
-    def cadastrar_os_aberta_db(self, os, data, cliente, carro, motorista, servico, situacao):
-        self.os = os
+    def cadastrar_os_aberta_db(self, data, cliente, carro, motorista, servico, situacao):
         self.data = data
         self.cliente = cliente
         self.carro = carro
@@ -94,17 +93,13 @@ class Backend():
         self.situacao = situacao
 
 
-        self.conecta_db()
-        self.cursor.execute("""INSERT INTO ordem_servico (os, data, cliente, carro, motorista, servico, situacao) VALUES(:os, :data, :cliente, :carro, :motorista, :servico, :situacao)
-                            """,{'os': self.os, 'data': self.data, 'cliente': self.cliente, 'carro': self.carro, 'motorista': self.motorista, 'servico': self.servico, 'situacao': self.situacao})
-
         try:
-            if(self.os =="" or self.data =="" or self.cliente =="" or self.carro =="" or self.motorista =="" or self.motorista ==''):
-                messagebox.showerror(title ='', message='Preencha todos os dados!')
-            else:
-                self.conn.commit()
-                messagebox.showinfo(title='', message = 'Ordem de serviço cadastrada com sucesso.')
-                self.desconecta_db()
+            self.conecta_db()
+            self.cursor.execute("""INSERT INTO ordem_servico (data, cliente, carro, motorista, servico, situacao) VALUES(:data, :cliente, :carro, :motorista, :servico, :situacao)
+                                """,{'data': self.data, 'cliente': self.cliente, 'carro': self.carro, 'motorista': self.motorista, 'servico': self.servico, 'situacao': self.situacao})
+            self.conn.commit()
+            messagebox.showinfo(title='', message = 'Ordem de serviço cadastrada com sucesso.')
+            self.desconecta_db()
         except:
             messagebox.showerror(title = '', message='Erro no processo de cadastramento.')
             self.desconecta_db()
@@ -150,6 +145,7 @@ class Backend():
                 return self.verifica_dados
         except:
             messagebox.showerror(message='Ainda não há ordem de serviço aberta') 
+
 
     def ver_os_fechada_db(self):
         self.conecta_db()

@@ -2,6 +2,7 @@ import customtkinter as ctk
 from tkinter import * 
 from tkinter import messagebox
 from CTkTable import *
+import datetime
 
 # class Utilidades():
 #     def __init__(self, master, menu, backend):
@@ -63,14 +64,9 @@ class OS():
         self.frame_cria_os = ctk.CTkFrame(self.master, width = 400, height = 500)
         self.frame_cria_os.grid_columnconfigure(0, weight=1)
         self.frame_cria_os.grid(row = 0,  column = 0, pady = 30)
-
-        # Número OS
-        self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'N. ordem de serviço', font = ('Roboto', 14))
-        self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
-
-        self.numero_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 125, font=('Roboto', 12),corner_radius=15)
-        self.numero_os_entry.grid(row = 0, column = 1, padx = 10, pady = 10, sticky = 'nswe')
-
+        
+        self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Preencher nova ordem de serviço', font = ('Roboto', 18))
+        self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10, sticky = 'nswe')
         # # Data
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Data', font = ('Roboto', 14))
         self.lbtitle.grid(row = 1, column = 0, padx = 0, pady = 10)
@@ -78,6 +74,7 @@ class OS():
         self.date_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
         self.date_os_entry.grid(row = 1, column = 1, padx = 5, pady = 10)
 
+        
         # Cliente
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Cliente', font = ('Roboto', 14))
         self.lbtitle.grid(row = 2, column = 0, padx = 5, pady = 10)
@@ -117,7 +114,6 @@ class OS():
         # Botão Registrar
         # irá se comunicar com a base de dados e inserir os dados na base de dados
         self.btn_registrar_os = ctk.CTkButton(master =self.frame_cria_os, text= 'Registrar', width = 150, font=('Roboto', 12), corner_radius= 20, command = lambda: self.cadastrar_os_aberta(
-            self.numero_os_entry,
             self.date_os_entry,   
             self.cliente_os_entry,
             self.veiculo_os_entry, 
@@ -149,7 +145,7 @@ class OS():
             self.lbtitle = ctk.CTkLabel(master = self.frame_os_abertas, text = 'Ordens de serviço abertas', font = ('Roboto', 14))
             self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
 
-            table = CTkTable(master= self.scroll_frame, values=os_abertas, height=30, width=40)
+            table = CTkTable(master= self.scroll_frame, values=os_abertas, height=30, width=40, column=7)
             
             table.grid(row=1, column=0, padx=0, pady=20)
 
@@ -168,7 +164,7 @@ class OS():
             self.btn_buscar.grid(row = 6, column = 0, padx = 5, pady = 5)
 
         except:
-            messagebox.showerror(message='Ainda não há ordens de serviço abertas.')
+            messagebox.showinfo(message='Ainda não há ordens de serviço abertas.')
 
         # Botão voltar
         self.btn_voltar = ctk.CTkButton(master = self.frame_os_abertas, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_abertas, self.tela_os)))                       
@@ -187,7 +183,7 @@ class OS():
             self.frame_os_fechada.grid_columnconfigure(0, weight=1)
             self.frame_os_fechada.grid(row = 0,  column = 0, pady = 30)
         
-            self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_fechada, width = 715, height = 300)
+            self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_fechada, width = 725, height = 300)
             self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)
 
             # frame_os_fechada widgets
@@ -212,7 +208,7 @@ class OS():
             self.btn_buscar.grid(row = 6, column = 0, padx = 5, pady = 5)
 
         except:
-            messagebox.showerror(message='Ainda não há ordens de serviço fechadas.')
+            messagebox.showinfo(message='Ainda não há ordens de serviço fechadas.')
 
         # Botão voltar
         self.btn_voltar = ctk.CTkButton(master = self.frame_os_fechada, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_fechada, self.tela_os)))                       
@@ -269,7 +265,11 @@ class OS():
 
         return resultado_busca
 
-    # Criar self.limpa_os
+    def editar_os(self, num_os):
+        pass
+
+    def fechar_os(self, os):
+        pass
 
     def voltar_menu(self):
         self.remover_tela_os()
@@ -289,25 +289,21 @@ class OS():
         self.frame_os.grid_remove()   
 
 
-    def cadastrar_os_aberta(self, os, data, cliente, carro, motorista, servico, situacao):
-        os = os.get()
-        data = data.get()
-        cliente = cliente.get()
+    def cadastrar_os_aberta(self, data, cliente, carro, motorista, servico, situacao):
+        data = self.validar_formato_data(data.get())
+        cliente = self.formata_texto(cliente.get())
         carro = carro.get()
-        motorista = motorista.get()
-        servico = servico.get()
+        motorista = self.formata_texto(motorista.get())
+        servico = self.formata_texto(servico.get())
         situacao = situacao.get()
 
-        self.backend.cadastrar_os_aberta_db(os, data, cliente, carro, motorista, servico, situacao)
-        
-    ##### Criar botão para selecionar uma ordem de serviço e então as opções de editar ou imprimir
-    ## Criar botão de editar em ver_os_aberta --- 
+        if(cliente =="" or carro =="" or motorista =="" or servico ==''):
+            messagebox.showerror(title ='', message='Preencha todos os dados!')
+        else:
+            self.backend.cadastrar_os_aberta_db(data, cliente, carro, motorista, servico, situacao)
+
     ## Criar botão para imprimir ordem de serviço
         
-
-    ## Criar input para selecionar uma ordem de serviço e dois botões (editar, imprimir)
-    def editar_os(self):
-        pass
 
     def imprimir_os(self):
         # Será transformado para pdf --- 
@@ -317,5 +313,16 @@ class OS():
         frame.grid_remove()   
 
 
-    def validadores(self):
+    def preenchimento_automatico(self):
         pass
+
+    def validar_formato_data(self, data):
+        try:
+            datetime.datetime.strptime(data, '%d/%m/%Y')
+            return data
+        except ValueError:
+            messagebox.showerror(message='Formato de data inválido. Use DD/MM/AAAA.')
+            return False
+
+    def formata_texto(self, texto):
+        return texto.title().strip()
