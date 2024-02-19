@@ -1,7 +1,8 @@
 import customtkinter as ctk
 from tkinter import * 
 from tkinter import messagebox
-from funcionalidades import OS
+from ordem_servico import OS
+from cadastro import Cadastro 
 
 class App_menu():
     def __init__(self, master, backend):
@@ -9,6 +10,7 @@ class App_menu():
         self.backend = backend
         # self.utilidades = Utilidades(master= self.master, backend =  self.backend, menu = self)
         self.os = OS(self.master, self, self.backend)
+        self.cadastro = Cadastro(self.master, self, self.backend)
 
 
     def tela_menu(self):
@@ -27,12 +29,12 @@ class App_menu():
         self.btn_os.grid(row = 2, column = 0, padx = 10, pady = 10)
 
         # Botão financeiro
-        self.btn_os = ctk.CTkButton(master = self.frame_menu, text= 'Financeiro', width = 300, font=('Roboto', 14), corner_radius= 20)                             
-        self.btn_os.grid(row = 3, column = 0, padx = 10, pady = 10)
+        self.btn_financeiro = ctk.CTkButton(master = self.frame_menu, text= 'Financeiro', width = 300, font=('Roboto', 14), corner_radius= 20)                             
+        self.btn_financeiro.grid(row = 3, column = 0, padx = 10, pady = 10)
 
         # Botão cadastro
-        self.btn_os = ctk.CTkButton(master = self.frame_menu, text= 'Cadastro', width = 300, font=('Roboto', 14), corner_radius= 20)                             
-        self.btn_os.grid(row = 4, column = 0, padx = 10, pady = 10)
+        self.btn_cadastro = ctk.CTkButton(master = self.frame_menu, text= 'Cadastro', width = 300, font=('Roboto', 14), corner_radius= 20, command = self.cadastro.tela_cadastro)                             
+        self.btn_cadastro.grid(row = 4, column = 0, padx = 10, pady = 10)
 
         # Botão apoio
         self.btn_os = ctk.CTkButton(master = self.frame_menu, text= 'Apoio', width = 300, font=('Roboto', 14), corner_radius= 20)                             

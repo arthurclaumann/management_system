@@ -3,6 +3,7 @@
 self.frame_os = ctk.CTkFrame(self.master, width = 400, height = 500)
             self.frame_os_abertas.grid_columnconfigure(0, weight=1)
             self.frame_os_abertas.grid(row = 0,  column = 0, pady = 30)
+            
 0.1. scroll_frame
 self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_abertas, width = 715, height = 300)
             self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)
@@ -37,36 +38,16 @@ table = CTkTable(master= self.scroll_frame, values=os_abertas, height=30, width=
 
 
 
+def conectar_eventos_entrada(self):
+    self.cliente_os_entry.bind("<KeyRelease>", lambda event: self.preencher_automatico(self.cliente_os_entry))
+    self.veiculo_os_entry.bind("<KeyRelease>", lambda event: self.preencher_automatico(self.veiculo_os_entry))
+    self.motorista_os_entry.bind("<KeyRelease>", lambda event: self.preencher_automatico(self.motorista_os_entry))
 
-
-
-        # Veículo
-        self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Veiculo', font = ('Roboto', 18))
-        self.lbtitle.grid(row = 3, column = 0, padx = 5, pady = 5)
-
-        self.veiculo_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= 'Veiculo', width = 300, font=('Roboto', 12),corner_radius=15)
-        self.veiculo_os_entry.grid(row = 3, column = 1, padx = 5, pady = 5)
-
-        # Motorista
-        self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Motorista', font = ('Roboto', 18))
-        self.lbtitle.grid(row = 4, column = 0, padx = 5, pady = 5)
-
-        self.motorista_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= 'Motorista', width = 300, font=('Roboto', 12),corner_radius=15)
-        self.motorista_os_entry.grid(row = 4, column = 1, padx = 5, pady = 5)
-
-        # Serviço
-        self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Serviço', font = ('Roboto', 18))
-        self.lbtitle.grid(row = 5, column = 0, padx = 5, pady = 5)
-  
-        self.servico_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= 'Serviço', width = 300, font=('Roboto', 12),corner_radius=15)
-        self.servico_os_entry.grid(row = 5, column = 1, padx = 5, pady = 5)
-
-
-
-                # # Botão voucher_despesa
-        # self.btn_voucher_despesa = ctk.CTkButton(master = self.frame_os, text= 'Voucher/Despesa', width = 200, font=('Roboto', 14), corner_radius= 20, fg_color = 'green')                             
-        # self.btn_voucher_despesa.grid(row = 3, column = 0, padx = 10, pady = 10)
-
-        # # Botão vouchers_emitidos
-        # self.btn_voucher_emitido = ctk.CTkButton(master = self.frame_os, text= 'Vouchers emitidos', width = 200, font=('Roboto', 14), corner_radius= 20, fg_color = 'green')                             
-        # self.btn_voucher_emitido.grid(row = 4, column = 0, padx = 10, pady = 10)
+def preencher_automatico(self, entry):
+    texto_digitado = entry.get()
+    # Lógica para buscar dados no banco de dados com base no texto digitado
+    dados_encontrados = self.backend.buscar_dados(texto_digitado)
+    if dados_encontrados:
+        # Atualize o campo de entrada automaticamente com os dados encontrados
+        entry.delete(0, END)
+        entry.insert(0, dados_encontrados['nome'])  # Por exemplo, você pode esco
