@@ -20,8 +20,8 @@ class Application(ctk.CTk):
         # self.menu = App_menu(self, self.backend, self.login_screen)
 
         # self.menu.tela_menu()
-        self.backend.cria_tabela()
-        self.backend.cria_tabela_os()
+        # self.backend.cria_tabela()
+        # self.backend.cria_tabela_os()
 
     def tema(self):
         # definindo a aparência e cor do tema

@@ -59,6 +59,84 @@ class Backend():
             messagebox.showerror(title = 'Sistema de Login', message='Erro no processo de cadastramento.')
             self.desconecta_db()
 
+    def cria_tabela_veiculos(self):
+        try:
+            self.conecta_db()
+            self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS veiculos (
+                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        modelo TEXT NOT NULL, 
+                        placa TEXT NOT NULL,
+                        ano TEXT NOT NULL,
+                        placa_veiculo TEXT NOT NULL
+            );
+            ''')
+
+            self.conn.commit()
+            # print('Tabela criada com sucesso')
+            self.desconecta_db()
+        except:
+            messagebox.showerror(message='Não foi possível criar a base de dados.')
+
+            # Validar nome - CPF/CNPJ
+
+    def cadastrar_veiculo_db(self, modelo, placa, ano, placa_veiculo):
+        self.modelo = modelo
+        self.placa = placa
+        self.ano = ano
+        self.placa_veiculo = placa_veiculo
+
+        try:
+            self.conecta_db()
+            self.cursor.execute("""INSERT INTO veiculos (modelo, placa, ano, placa_veiculo) VALUES(:modelo, :placa, :ano, :placa_veiculo)
+                                """,{'modelo': self.modelo, 'placa': self.placa, 'ano': self.ano, 'placa_veiculo': self.placa_veiculo})
+            self.conn.commit()
+            messagebox.showinfo(title='', message = 'Veículo cadastrado com sucesso.')
+            self.desconecta_db()
+        except:
+            messagebox.showerror(title = '', message='Erro no processo de cadastramento.')
+            self.desconecta_db()
+        pass
+
+
+    def cria_tabela_clientes(self):
+        try:
+            self.conecta_db()
+            self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS clientes (
+                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        nome TEXT NOT NULL, 
+                        cpf_cnpj TEXT NOT NULL,
+                        cidade TEXT NOT NULL,
+                        uf TEXT NOT NULL
+            );
+            ''')
+
+            self.conn.commit()
+            # print('Tabela criada com sucesso')
+            self.desconecta_db()
+        except:
+            messagebox.showerror(message='Não foi possível criar a base de dados.')
+
+
+    def cria_tabela_motoristas(self):
+        try:
+            self.conecta_db()
+            self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS motoristas (
+                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        nome TEXT NOT NULL, 
+                        cpf TEXT,
+                        ano_ingresso TEXT
+            );
+            ''')
+
+            self.conn.commit()
+            # print('Tabela criada com sucesso')
+            self.desconecta_db()
+        except:
+            messagebox.showerror(message='Não foi possível criar a base de dados.')
+        
 
     def cria_tabela_os(self):
         self.conecta_db()

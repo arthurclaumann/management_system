@@ -8,6 +8,7 @@ class Login():
         self.master = master
         self.backend = backend
         self.menu = App_menu(self.master, self.backend)
+        self.backend.cria_tabela()
 
 
     def tela_login(self):

@@ -16,6 +16,7 @@ class OS():
         self.master = master
         self.menu = menu
         self.backend = backend
+        self.backend.cria_tabela_os()
 
 
     def tela_os(self):
@@ -87,7 +88,7 @@ class OS():
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Veiculo', font = ('Roboto', 14))
         self.lbtitle.grid(row = 3, column = 0, padx = 5, pady = 5)
         
-        self.veiculo_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, justify = 'center',values=["PLD-8032 TOYOTA COROLLA", "EZY 4G48 SPRINTER MARTM5"], width=250, font=('Roboto', 12), corner_radius=12)
+        self.veiculo_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, justify = 'center',values=["PLD-8032 TOYOTA COROLLA", "EZY-4G48 SPRINTER MARTM5"], width=250, font=('Roboto', 12), corner_radius=12)
         self.veiculo_os_entry.grid(row = 3, column = 1, padx = 5, pady = 5)
 
         # Motorista --- Criar função para obter motoristas do db
