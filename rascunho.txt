@@ -51,3 +51,23 @@ def preencher_automatico(self, entry):
         # Atualize o campo de entrada automaticamente com os dados encontrados
         entry.delete(0, END)
         entry.insert(0, dados_encontrados['nome'])  # Por exemplo, você pode esco
+
+
+
+    def cadastrar_veiculo(self, modelo, placa, ano):
+        modelo = (modelo.get())
+        placa = (placa.get())
+        ano = (ano.get())
+
+        # Adicionar placa+modelo junto no database
+        placa_veiculo =  placa + '-' + modelo
+        placa_veiculo = placa_veiculo.strip()
+
+        if(modelo == '' or placa == ''):
+            messagebox.showerror(message='Preencha o modelo e a placa.')
+        else:
+            self.backend.cadastrar_veiculo_db(modelo, placa, ano, placa_veiculo)
+
+
+        self.btn_cadastrar = ctk.CTkButton(master =self.frame_cadastro_veiculo, text= 'Cadastrar', width = 125, font=('Roboto', 12), corner_radius= 20, fg_color = 'gray', command = lambda: self.cadastrar_veiculo(self.modelo_veiculo_entry, self.placa_veiculo_entry, self.placa_veiculo_entry))                       
+        self.btn_cadastrar.grid(row = 4, column = 1, padx = 10, pady = 10)       

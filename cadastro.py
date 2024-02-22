@@ -3,6 +3,8 @@ from tkinter import *
 from tkinter import messagebox
 from CTkTable import *
 import datetime
+from validate_docbr import CPF, CNPJ
+from datetime import datetime
 
 
 class Cadastro():
@@ -13,6 +15,7 @@ class Cadastro():
         self.backend.cria_tabela_veiculos()
         self.backend.cria_tabela_clientes()
         self.backend.cria_tabela_motoristas()
+
 
     def tela_cadastro(self):
         self.menu.limpa_menu()
@@ -99,12 +102,13 @@ class Cadastro():
         ano = (ano.get())
 
         # Adicionar placa+modelo junto no database
-        placa_veiculo =  placa + ' ' + modelo
+        placa_veiculo =  placa + '-' + modelo
+        placa_veiculo = placa_veiculo.strip()
+
         if(modelo == '' or placa == ''):
             messagebox.showerror(message='Preencha o modelo e a placa.')
         else:
             self.backend.cadastrar_veiculo_db(modelo, placa, ano, placa_veiculo)
-
 
 
     def tela_cadastro_cliente(self):
@@ -126,52 +130,90 @@ class Cadastro():
         self.nome_cliente_entry = ctk.CTkEntry(master = self.frame_cadastro_cliente, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
         self.nome_cliente_entry.grid(row = 1, column = 1, padx = 10, pady = 10) 
 
-        # CPF/CNPJ
-        self.lbtitle = ctk.CTkLabel(master = self.frame_cadastro_cliente, text = 'CPF/CNPJ:', font = ('Roboto', 14))
+        # SelectBox
+        self.lbtitle = ctk.CTkLabel(master = self.frame_cadastro_cliente, text = 'Tipo:', font = ('Roboto', 14))
         self.lbtitle.grid(row = 2, column = 0, padx = 0, pady = 10)   
 
+
+        self.cpf_cnpj_option = ctk.CTkComboBox(master=self.frame_cadastro_cliente, values=["CPF", "CNPJ"], width=250, font=('Roboto', 12), corner_radius=12)
+        self.cpf_cnpj_option.grid(row = 2, column = 1, padx = 10, pady = 10) 
+
+        # CPF/CNPJ
+        self.lbtitle = ctk.CTkLabel(master = self.frame_cadastro_cliente, text = 'CPF/CNPJ:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 10)   
+
         self.cpf_cnpj_entry = ctk.CTkEntry(master = self.frame_cadastro_cliente, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
-        self.cpf_cnpj_entry.grid(row = 2, column = 1, padx = 10, pady = 10)   
+        self.cpf_cnpj_entry.grid(row = 3, column = 1, padx = 10, pady = 10)   
 
         # Cidade
         self.lbtitle = ctk.CTkLabel(master = self.frame_cadastro_cliente, text = 'Cidade:', font = ('Roboto', 14))
-        self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 10)   
+        self.lbtitle.grid(row = 4, column = 0, padx = 0, pady = 10)   
 
         self.cidade_cliente_entry = ctk.CTkEntry(master = self.frame_cadastro_cliente, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
-        self.cidade_cliente_entry.grid(row = 3, column = 1, padx = 10, pady = 10)   
+        self.cidade_cliente_entry.grid(row = 4, column = 1, padx = 10, pady = 10)   
 
         # Estado
         self.lbtitle = ctk.CTkLabel(master = self.frame_cadastro_cliente, text = 'UF:', font = ('Roboto', 14))
-        self.lbtitle.grid(row = 4, column = 0, padx = 0, pady = 10)   
+        self.lbtitle.grid(row = 5, column = 0, padx = 0, pady = 10)   
 
         self.uf_cliente_entry = ctk.CTkEntry(master = self.frame_cadastro_cliente, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
-        self.uf_cliente_entry.grid(row = 4, column = 1, padx = 10, pady = 10)   
+        self.uf_cliente_entry.grid(row = 5, column = 1, padx = 10, pady = 10)   
 
 
         # cadastrar
-        self.btn_cadastrar = ctk.CTkButton(master =self.frame_cadastro_cliente, text= 'Cadastrar', width = 125, font=('Roboto', 12), corner_radius= 20, fg_color = 'gray')                       
-        self.btn_cadastrar.grid(row = 5, column = 1, padx = 10, pady = 10)       
+        self.btn_cadastrar = ctk.CTkButton(master =self.frame_cadastro_cliente, text= 'Cadastrar', width = 125, font=('Roboto', 12), corner_radius= 20, fg_color = 'gray', command= lambda: self.cadastrar_cliente(self.nome_cliente_entry, self.cpf_cnpj_entry, self.cidade_cliente_entry, self.uf_cliente_entry, self.cpf_cnpj_option))                       
+        self.btn_cadastrar.grid(row = 6, column = 1, padx = 10, pady = 10)       
 
 
         # voltar
         self.btn_voltar = ctk.CTkButton(master =self.frame_cadastro_cliente, text= 'Voltar', width = 85, font=('Roboto', 12), corner_radius= 20, command = lambda: self.voltar_tela(self.frame_cadastro_cliente, self.tela_cadastro), fg_color = 'green')                       
-        self.btn_voltar.grid(row = 6, column = 1, padx = 10, pady = 10)              
+        self.btn_voltar.grid(row = 7, column = 1, padx = 10, pady = 10)              
 
 
-    def cadastrar_cliente(self, nome, cpf_cnpj, cidade, uf):
+    def cadastrar_cliente(self, nome, cpf_cnpj, cidade, uf, tipo):
         # Validar nome - CPF/CNPJ
-        nome = (nome.get())
+        nome = nome.get().title().strip()
         cpf_cnpj = (cpf_cnpj.get())
-        cidade = (cidade.get())
-        uf = (uf.get())
+        cidade = (cidade.get()).title().strip()
+        uf = (uf.get()).upper().strip()
+        cpf_cnpj_option = tipo.get().strip()
 
 
         if(nome == '' or cpf_cnpj == ''):
             messagebox.showerror(message='Preencha o nome e CPF/CNPJ.')
         else:
-            ### Criar regex para validar cpf ou cnpj
-            self.backend.cadastrar_veiculo_db(modelo, placa, ano, placa_veiculo)
-        pass
+            if cpf_cnpj_option == 'CPF':
+                cpf_cnpj = self.valida_cpf(cpf_cnpj)  
+                print(cpf_cnpj)          
+            else: 
+                cpf_cnpj = self.valida_cnpj(cpf_cnpj)
+                print(cpf_cnpj)   
+
+            if cpf_cnpj is not None:  # Verifica se o CPF/CNPJ é válido
+                self.backend.cadastrar_cliente_db(nome, cpf_cnpj_option, cpf_cnpj, cidade, uf)
+            else:
+                messagebox.showerror(message='CPF/CNPJ inválido.')           # self.backend.cadastrar_cliente_db(nome, cpf_cnpj_option, cpf_cnpj, cidade, uf)
+        
+
+    def valida_cpf(self, documento):
+        documento = str(documento)
+        validador = CPF()
+        if validador.validate(documento):
+            documento = validador.mask(documento)
+            return documento
+        else:
+            return None
+
+
+    def valida_cnpj(self, documento):
+        documento = str(documento)
+        cnpj_validacao = CNPJ()
+        if cnpj_validacao.validate(documento):
+            documento = cnpj_validacao.mask(documento)
+            return documento
+        else:
+            return None
+    
 
     def tela_cadastro_motorista(self):
         # frame cadastro de cliente
@@ -199,16 +241,16 @@ class Cadastro():
         self.cpf_motorista_entry = ctk.CTkEntry(master = self.frame_cadastro_motorista, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
         self.cpf_motorista_entry.grid(row = 2, column = 1, padx = 10, pady = 10)   
 
-        # Ano de ingresso
-        self.lbtitle = ctk.CTkLabel(master = self.frame_cadastro_motorista, text = 'Ano de ingresso:', font = ('Roboto', 14))
+        # Data de ingresso
+        self.lbtitle = ctk.CTkLabel(master = self.frame_cadastro_motorista, text = 'Data de ingresso:', font = ('Roboto', 14))
         self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 10)   
 
-        self.ano_ingresso_entry = ctk.CTkEntry(master = self.frame_cadastro_motorista, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
-        self.ano_ingresso_entry.grid(row = 3, column = 1, padx = 10, pady = 10)   
+        self.data_ingresso_motorista_entry = ctk.CTkEntry(master = self.frame_cadastro_motorista, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
+        self.data_ingresso_motorista_entry.grid(row = 3, column = 1, padx = 10, pady = 10)   
 
 
         # cadastrar
-        self.btn_cadastrar = ctk.CTkButton(master =self.frame_cadastro_motorista, text= 'Cadastrar', width = 125, font=('Roboto', 12), corner_radius= 20, fg_color = 'gray')                       
+        self.btn_cadastrar = ctk.CTkButton(master =self.frame_cadastro_motorista, text= 'Cadastrar', width = 125, font=('Roboto', 12), corner_radius= 20, fg_color = 'gray', command = lambda: self.cadastrar_motorista(self.nome_motorista_entry, self.cpf_motorista_entry, self.data_ingresso_motorista_entry))                       
         self.btn_cadastrar.grid(row = 5, column = 1, padx = 10, pady = 10)       
 
 
@@ -217,19 +259,35 @@ class Cadastro():
         self.btn_voltar.grid(row = 6, column = 1, padx = 10, pady = 10)       
         pass
 
-    def cadastrar_motorista(self):
-         # Validar nome - CPF/CNPJ - ANO
 
-        pass
+    def cadastrar_motorista(self, nome, cpf, data):
+        # Validar nome - CPF/CNPJ
+        nome = nome.get().title().strip()
+        cpf = (cpf.get())
+        data = data.get().strip()
 
-    def valida_usuario(self):
-        pass
+        if(nome == '' or cpf == ''):
+            messagebox.showerror(message='Preencha o nome e CPF.')
+        else: 
+            if self.validar_data(data):
+                cpf = self.valida_cpf(cpf)
 
-    def valida_cliente(self):
-        pass
-
-    def valida_motorista(self):
-        pass
+                if cpf is not None:  # Verifica se o CPF/CNPJ é válido
+                    self.backend.cadastrar_motorista_db(nome, cpf, data)
+                else:
+                    messagebox.showerror(message='CPF inválido.')
+            else:
+                messagebox.showerror(message='Formato de data incorreto. Ex: dd/mm/yyyy.')
+            # print(nome, cpf, data)
+        
+        
+    def validar_data(self, data_texto):
+        formato = '%d/%m/%Y'
+        try:
+            datetime.strptime(data_texto, formato)
+            return True
+        except ValueError:
+            return False
 
 
     def voltar_tela(self, frame_atual, frame_anterior):

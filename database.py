@@ -59,6 +59,7 @@ class Backend():
             messagebox.showerror(title = 'Sistema de Login', message='Erro no processo de cadastramento.')
             self.desconecta_db()
 
+
     def cria_tabela_veiculos(self):
         try:
             self.conecta_db()
@@ -77,8 +78,10 @@ class Backend():
             self.desconecta_db()
         except:
             messagebox.showerror(message='Não foi possível criar a base de dados.')
+            self.desconecta_db()
 
             # Validar nome - CPF/CNPJ
+
 
     def cadastrar_veiculo_db(self, modelo, placa, ano, placa_veiculo):
         self.modelo = modelo
@@ -96,8 +99,7 @@ class Backend():
         except:
             messagebox.showerror(title = '', message='Erro no processo de cadastramento.')
             self.desconecta_db()
-        pass
-
+        
 
     def cria_tabela_clientes(self):
         try:
@@ -105,7 +107,8 @@ class Backend():
             self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS clientes (
                         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                        nome TEXT NOT NULL, 
+                        cliente  TEXT NOT NULL, 
+                        tipo TEXT NOT NULL,
                         cpf_cnpj TEXT NOT NULL,
                         cidade TEXT NOT NULL,
                         uf TEXT NOT NULL
@@ -117,6 +120,27 @@ class Backend():
             self.desconecta_db()
         except:
             messagebox.showerror(message='Não foi possível criar a base de dados.')
+            self.desconecta_db()
+
+
+    def cadastrar_cliente_db(self, cliente, tipo, cpf_cnpj, cidade, uf):
+        self.cliente = cliente
+        self.tipo = tipo
+        self.cpf_cnpj = cpf_cnpj
+        self.cidade = cidade 
+        self.uf = uf
+
+        try:
+            self.conecta_db()
+            self.cursor.execute("""INSERT INTO clientes(cliente, tipo, cpf_cnpj, cidade, uf) VALUES(:cliente, :tipo, :cpf_cnpj, :cidade, :uf)
+                                """,{'cliente': self.cliente, 'tipo': self.tipo, 'cpf_cnpj': self.cpf_cnpj, 
+                                     'cidade': self.cidade, 'uf': self.uf})
+            self.conn.commit()
+            messagebox.showinfo(title='', message = 'Cliente cadastrado com sucesso.')
+            self.desconecta_db()
+        except:
+            messagebox.showerror(title = '', message='Erro no processo de cadastramento.')
+            self.desconecta_db()
 
 
     def cria_tabela_motoristas(self):
@@ -125,9 +149,9 @@ class Backend():
             self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS motoristas (
                         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                        nome TEXT NOT NULL, 
+                        nome_motorista TEXT NOT NULL, 
                         cpf TEXT,
-                        ano_ingresso TEXT
+                        data_ingresso TEXT
             );
             ''')
 
@@ -137,6 +161,24 @@ class Backend():
         except:
             messagebox.showerror(message='Não foi possível criar a base de dados.')
         
+
+    def cadastrar_motorista_db(self, nome_motorista, cpf, data_ingresso):
+        self.nome_motorista = nome_motorista
+        self.cpf = cpf
+        self.data_ingresso = data_ingresso
+
+        try:
+            self.conecta_db()
+            self.cursor.execute("""INSERT INTO motoristas(nome_motorista, cpf, data_ingresso) VALUES(:nome_motorista, :cpf, :data_ingresso)
+                                """,{'nome_motorista': self.nome_motorista, 'cpf': self.cpf, 'data_ingresso': self.data_ingresso})
+            self.conn.commit()
+            messagebox.showinfo(title='', message = 'Motorista cadastrado com sucesso.')
+            self.desconecta_db()
+        except:
+            messagebox.showerror(title = '', message='Erro no processo de cadastramento.')
+            self.desconecta_db()
+        
+
 
     def cria_tabela_os(self):
         self.conecta_db()
