@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 from CTkTable import *
 import datetime
+from CTkScrollableDropdown import *
 
 # class Utilidades():
 #     def __init__(self, master, menu, backend):
@@ -49,9 +50,13 @@ class OS():
         self.btn_fechar_os = ctk.CTkButton(master = self.frame_os, text= 'Fechar ordem de serviço', width = 300, font=('Roboto', 14), corner_radius= 20)                             
         self.btn_fechar_os.grid(row = 7, column = 0, padx = 10, pady = 10)
 
+        # Editar os
+        self.btn_editar_os = ctk.CTkButton(master = self.frame_os, text= 'Editar ordem de serviço', width = 300, font=('Roboto', 14), corner_radius= 20)                         
+        self.btn_editar_os.grid(row = 8, column = 0, padx = 10, pady = 10)
+
         # Botão relatorio_por_carro
         self.btn_relatorio_carro = ctk.CTkButton(master = self.frame_os, text= 'Relatório por carros', width = 300, font=('Roboto', 14), corner_radius= 20)                         
-        self.btn_relatorio_carro.grid(row = 8, column = 0, padx = 10, pady = 10)
+        self.btn_relatorio_carro.grid(row = 9, column = 0, padx = 10, pady = 10)
 
         # Botão voltar
         self.btn_voltar = ctk.CTkButton(master = self.frame_os, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = self.voltar_menu, fg_color='green')                       
@@ -67,7 +72,8 @@ class OS():
         self.frame_cria_os.grid(row = 0,  column = 0, pady = 30)
         
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Preencher nova ordem de serviço', font = ('Roboto', 18))
-        self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10, sticky = 'nswe')
+        self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10, sticky = 'nswe', columnspan = 2)
+
         # # Data
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Data', font = ('Roboto', 14))
         self.lbtitle.grid(row = 1, column = 0, padx = 0, pady = 10)
@@ -83,13 +89,18 @@ class OS():
         self.cliente_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
         self.cliente_os_entry.grid(row = 2, column = 1, padx = 5, pady = 10)
 
+        CTkScrollableDropdown(self.cliente_os_entry, values=self.retorna_todos_clientes(), command=lambda e: self.cliente_os_entry.insert(1, e),
+                      autocomplete=True) # Using autocomplete
 
         # Veículo  --- criar registro de veículos e inserir lista de veículos nas opções
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Veiculo', font = ('Roboto', 14))
         self.lbtitle.grid(row = 3, column = 0, padx = 5, pady = 5)
         
-        self.veiculo_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, justify = 'center',values=["PLD-8032 TOYOTA COROLLA", "EZY-4G48 SPRINTER MARTM5"], width=250, font=('Roboto', 12), corner_radius=12)
+        self.veiculo_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, justify = 'center', width=250, font=('Roboto', 12), corner_radius=12)
         self.veiculo_os_entry.grid(row = 3, column = 1, padx = 5, pady = 5)
+
+        CTkScrollableDropdown(self.veiculo_os_entry, values=self.retorna_veiculos(), justify="left", button_color="transparent", autocomplete = True)
+
 
         # Motorista --- Criar função para obter motoristas do db
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Motorista', font = ('Roboto', 14))
@@ -98,6 +109,8 @@ class OS():
         self.motorista_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
         self.motorista_os_entry.grid(row = 4, column = 1, padx = 5, pady = 5)
 
+        CTkScrollableDropdown(self.motorista_os_entry, values=self.retorna_todos_motoristas(), command=lambda e: self.motorista_os_entry.insert(1, e),
+                      autocomplete=True) # Using autocomplete
         # Serviço
         self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Serviço', font = ('Roboto', 14))
         self.lbtitle.grid(row = 5, column = 0, padx = 5, pady = 5)
@@ -105,12 +118,12 @@ class OS():
         self.servico_os_entry = ctk.CTkEntry(master = self.frame_cria_os, placeholder_text= '', width = 250, font=('Roboto', 12),corner_radius=15)
         self.servico_os_entry.grid(row = 5, column = 1, padx = 5, pady = 5)
 
-        # SITUAÇÂO DA OS - Fechada ou aberta
-        self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Situação:', font = ('Roboto', 14))
-        self.lbtitle.grid(row = 7, column = 0, padx = 5, pady = 5)
+        # # SITUAÇÂO DA OS - Fechada ou aberta
+        # self.lbtitle = ctk.CTkLabel(master = self.frame_cria_os, text = 'Situação:', font = ('Roboto', 14))
+        # self.lbtitle.grid(row = 7, column = 0, padx = 5, pady = 5)
         
-        self.situacao_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, values=["Aberta", "Fechada"], width=250, font=('Roboto', 12), corner_radius=12)
-        self.situacao_os_entry.grid(row = 7, column = 1, padx = 5, pady = 5)
+        # self.situacao_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, values=["Aberta", "Fechada"], width=250, font=('Roboto', 12), corner_radius=12)
+        # self.situacao_os_entry.grid(row = 7, column = 1, padx = 5, pady = 5)
 
         # Botão Registrar
         # irá se comunicar com a base de dados e inserir os dados na base de dados
@@ -119,8 +132,7 @@ class OS():
             self.cliente_os_entry,
             self.veiculo_os_entry, 
             self.motorista_os_entry,
-            self.servico_os_entry,   
-            self.situacao_os_entry))
+            self.servico_os_entry))
                             
         self.btn_registrar_os.grid(row = 9, column = 1, padx = 1, pady = 10)
 
@@ -290,18 +302,17 @@ class OS():
         self.frame_os.grid_remove()   
 
 
-    def cadastrar_os_aberta(self, data, cliente, carro, motorista, servico, situacao):
+    def cadastrar_os_aberta(self, data, cliente, carro, motorista, servico):
         data = self.validar_formato_data(data.get())
         cliente = self.formata_texto(cliente.get())
         carro = carro.get()
         motorista = self.formata_texto(motorista.get())
         servico = self.formata_texto(servico.get())
-        situacao = situacao.get()
 
         if(cliente =="" or carro =="" or motorista =="" or servico ==''):
             messagebox.showerror(title ='', message='Preencha todos os dados!')
         else:
-            self.backend.cadastrar_os_aberta_db(data, cliente, carro, motorista, servico, situacao)
+            self.backend.cadastrar_os_aberta_db(data, cliente, carro, motorista, servico)
 
     ## Criar botão para imprimir ordem de serviço
         
@@ -310,12 +321,10 @@ class OS():
         # Será transformado para pdf --- 
         pass
 
+
     def limpa_frame(self, frame):
         frame.grid_remove()   
 
-
-    def preenchimento_automatico(self):
-        pass
 
     def validar_formato_data(self, data):
         try:
@@ -327,3 +336,23 @@ class OS():
 
     def formata_texto(self, texto):
         return texto.title().strip()
+    
+    def retorna_veiculos(self):
+        veiculos = self.backend.retorna_veiculos()
+        veiculos = [veiculo[0] for veiculo in veiculos]
+        return veiculos
+    
+       
+    def retorna_todos_motoristas(self):
+        motoristas = self.backend.retorna_motoristas()
+        motoristas = [motorista[0] for motorista in motoristas]
+        return motoristas
+
+        
+
+    def retorna_todos_clientes(self):
+        clientes = self.backend.retorna_clientes()
+        clientes = [cliente[0] for cliente in clientes]
+        return clientes
+        
+ 

@@ -101,6 +101,18 @@ class Backend():
             self.desconecta_db()
         
 
+    def retorna_veiculos(self):
+        try:
+            self.conecta_db()
+            self.cursor.execute("SELECT placa_veiculo FROM veiculos")
+            resultado = self.cursor.fetchall()
+            return resultado
+        except:
+            messagebox.showerror(message='Não foi possível retornar todos veículos.')           # self.backend.cadastrar_cliente_db(nome, cpf_cnpj_option, cpf_cnpj, cidade, uf)
+        finally:    
+            self.desconecta_db()
+
+    
     def cria_tabela_clientes(self):
         try:
             self.conecta_db()
@@ -143,6 +155,18 @@ class Backend():
             self.desconecta_db()
 
 
+    def retorna_clientes(self):
+        try:
+            self.conecta_db()
+            self.cursor.execute("SELECT cliente FROM clientes")
+            resultado = self.cursor.fetchall()
+            return resultado
+        except:
+            messagebox.showerror(message='Não foi possível retornar os clientes.')           # self.backend.cadastrar_cliente_db(nome, cpf_cnpj_option, cpf_cnpj, cidade, uf)
+        finally:    
+            self.desconecta_db()
+
+
     def cria_tabela_motoristas(self):
         try:
             self.conecta_db()
@@ -179,6 +203,17 @@ class Backend():
             self.desconecta_db()
         
 
+    def retorna_motoristas(self):
+        try:
+            self.conecta_db()
+            self.cursor.execute("SELECT nome_motorista FROM motoristas")
+            resultado = self.cursor.fetchall()
+            return resultado
+        except:
+            messagebox.showerror(message='Não foi possível retornar os motoristas.')           # self.backend.cadastrar_cliente_db(nome, cpf_cnpj_option, cpf_cnpj, cidade, uf)
+        finally:    
+            self.desconecta_db()
+
 
     def cria_tabela_os(self):
         self.conecta_db()
@@ -203,20 +238,18 @@ class Backend():
         self.desconecta_db()
 
 
-    def cadastrar_os_aberta_db(self, data, cliente, carro, motorista, servico, situacao):
+    def cadastrar_os_aberta_db(self, data, cliente, carro, motorista, servico):
         self.data = data
         self.cliente = cliente
         self.carro = carro
         self.motorista = motorista
         self.servico = servico
         # self.valor = valor
-        self.situacao = situacao
-
 
         try:
             self.conecta_db()
-            self.cursor.execute("""INSERT INTO ordem_servico (data, cliente, carro, motorista, servico, situacao) VALUES(:data, :cliente, :carro, :motorista, :servico, :situacao)
-                                """,{'data': self.data, 'cliente': self.cliente, 'carro': self.carro, 'motorista': self.motorista, 'servico': self.servico, 'situacao': self.situacao})
+            self.cursor.execute("""INSERT INTO ordem_servico (data, cliente, carro, motorista, servico) VALUES(:data, :cliente, :carro, :motorista, :servico)
+                                """,{'data': self.data, 'cliente': self.cliente, 'carro': self.carro, 'motorista': self.motorista, 'servico': self.servico})
             self.conn.commit()
             messagebox.showinfo(title='', message = 'Ordem de serviço cadastrada com sucesso.')
             self.desconecta_db()

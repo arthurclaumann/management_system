@@ -97,12 +97,12 @@ class Cadastro():
 
 
     def cadastrar_veiculo(self, modelo, placa, ano):
-        modelo = (modelo.get())
-        placa = (placa.get())
+        modelo = (modelo.get()).upper()
+        placa = (placa.get()).upper()
         ano = (ano.get())
 
         # Adicionar placa+modelo junto no database
-        placa_veiculo =  placa + '-' + modelo
+        placa_veiculo =  placa + ' ' + modelo
         placa_veiculo = placa_veiculo.strip()
 
         if(modelo == '' or placa == ''):
