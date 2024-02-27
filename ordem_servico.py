@@ -99,7 +99,7 @@ class OS():
         self.veiculo_os_entry = ctk.CTkComboBox(master=self.frame_cria_os, justify = 'center', width=250, font=('Roboto', 12), corner_radius=12)
         self.veiculo_os_entry.grid(row = 3, column = 1, padx = 5, pady = 5)
 
-        CTkScrollableDropdown(self.veiculo_os_entry, values=self.retorna_veiculos(), justify="left", button_color="transparent", autocomplete = True)
+        CTkScrollableDropdown(self.veiculo_os_entry, values=self.retorna_todos_veiculos(), justify="left", button_color="transparent", autocomplete = True)
 
 
         # Motorista --- Criar função para obter motoristas do db
@@ -143,35 +143,46 @@ class OS():
 
     def ver_os_aberta(self):
         self.remover_tela_os()
+
+
         try:
             os_abertas = self.backend.ver_os_aberta_db()
 
-            ### self.frame_os_abertas
+            ### Criando o frame
             self.frame_os_abertas = ctk.CTkFrame(self.master, width = 450, height = 550)
             self.frame_os_abertas.grid_columnconfigure(0, weight=1)
             self.frame_os_abertas.grid(row = 0,  column = 0, pady = 30)
-            
+
+           # frame scrollable 
             self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_abertas, width = 725, height = 300)
             self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)
 
-            # frame_os_abertas widgets
+            # Widgets
+            # 1. Título
             self.lbtitle = ctk.CTkLabel(master = self.frame_os_abertas, text = 'Ordens de serviço abertas', font = ('Roboto', 14))
             self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
 
+            # 2. Criando a tabela
             table = CTkTable(master= self.scroll_frame, values=os_abertas, height=30, width=40, column=7)
-            
             table.grid(row=1, column=0, padx=0, pady=20)
 
-            # Seleção:::
+            # Opções de seleção
+            # Título seleção
             self.lbtitle = ctk.CTkLabel(master = self.frame_os_abertas, text = 'Selecionar:', font = ('Roboto', 14))
             self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 0)
 
-            self.selecionar_options_filtro = ctk.CTkOptionMenu(master = self.frame_os_abertas, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 225, font=('Roboto', 12),corner_radius=15)
+            # # # Lista de opções com autopreenchimento
+            self.var1 = ctk.StringVar()    
+            self.selecionar_options_filtro = ctk.CTkComboBox(master = self.frame_os_abertas, variable=self.var1, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 250, font=('Roboto', 12),corner_radius=15, command = lambda value: (self.on_combo1_selected(value, entry_frame=self.selecionar_entry)))
             self.selecionar_options_filtro.grid(row = 4, column = 0, padx = 0, pady = 5)
-            
-            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_abertas, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
+
+            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_abertas, placeholder_text='', width = 240, font=('Roboto', 12),corner_radius=15)
             self.selecionar_entry.grid(row = 5, column = 0, padx = 0, pady = 5)
 
+            CTkScrollableDropdown(self.selecionar_entry, values=[], command=lambda e: self.selecionar_entry.insert(1, e),
+                      autocomplete=True) # Using autocomplete         
+
+            
               # Botão buscar
             self.btn_buscar = ctk.CTkButton(master = self.frame_os_abertas, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(self.frame_os_abertas, self.selecionar_options_filtro, self.selecionar_entry,'Aberta', self.ver_os_aberta)), fg_color='gray')                       
             self.btn_buscar.grid(row = 6, column = 0, padx = 5, pady = 5)
@@ -190,32 +201,39 @@ class OS():
         try:
             os_fechadas = self.backend.ver_os_fechada_db()
 
-            # print(os_abertas)
-            ### self.frame_os_fechada
+            ### Criando o frame
             self.frame_os_fechada = ctk.CTkFrame(self.master, width = 450, height = 550)
             self.frame_os_fechada.grid_columnconfigure(0, weight=1)
             self.frame_os_fechada.grid(row = 0,  column = 0, pady = 30)
-        
+
+           # frame scrollable 
             self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_fechada, width = 725, height = 300)
             self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)
 
-            # frame_os_fechada widgets
+            # widgets
+            # 1. Título
             self.lbtitle = ctk.CTkLabel(master = self.frame_os_fechada, text = 'Ordens de serviço fechadas', font = ('Roboto', 14))
             self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
 
+            # 2. Criando a tabela
             table = CTkTable(master=  self.scroll_frame, values=os_fechadas, height=30, width=40)
-            
             table.grid(row=1, column=0, padx=0, pady=20)
 
-            # Seleção:::
+            # 3. Opções de seleção
+            # Título seleção
             self.lbtitle = ctk.CTkLabel(master = self.frame_os_fechada, text = 'Selecionar:', font = ('Roboto', 14))
             self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 0)
 
-            self.selecionar_options_filtro = ctk.CTkOptionMenu(master = self.frame_os_fechada, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 225, font=('Roboto', 12),corner_radius=15)
+            # Lista de opções com autopreenchimento
+            self.var1 = ctk.StringVar()
+            self.selecionar_options_filtro = ctk.CTkOptionMenu(master = self.frame_os_fechada, variable = self.var1, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 225, font=('Roboto', 12),corner_radius=15, command = lambda value: (self.on_combo1_selected(value, self.selecionar_entry)))
             self.selecionar_options_filtro.grid(row = 4, column = 0, padx = 0, pady = 5)
             
             self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_fechada, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
             self.selecionar_entry.grid(row = 5, column = 0, padx = 0, pady = 5)
+
+            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_fechada, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
+
             # Botão buscar
             self.btn_buscar = ctk.CTkButton(master = self.frame_os_fechada, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(self.frame_os_fechada, self.selecionar_options_filtro, self.selecionar_entry, 'Fechada', self.ver_os_fechada)), fg_color='gray')                       
             self.btn_buscar.grid(row = 6, column = 0, padx = 5, pady = 5)
@@ -241,7 +259,7 @@ class OS():
 
 
         # frame_os_selecionada widgets
-        self.lbtitle = ctk.CTkLabel(master = self.frame_os_selecionada, text = 'Ordem de serviço', font = ('Roboto', 14))
+        self.lbtitle = ctk.CTkLabel(master = self.frame_os_selecionada, text = 'Ordem de serviço', font = ('Roboto', 18))
         self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
 
         try:
@@ -337,7 +355,8 @@ class OS():
     def formata_texto(self, texto):
         return texto.title().strip()
     
-    def retorna_veiculos(self):
+
+    def retorna_todos_veiculos(self):
         veiculos = self.backend.retorna_veiculos()
         veiculos = [veiculo[0] for veiculo in veiculos]
         return veiculos
@@ -349,10 +368,27 @@ class OS():
         return motoristas
 
         
-
     def retorna_todos_clientes(self):
         clientes = self.backend.retorna_clientes()
         clientes = [cliente[0] for cliente in clientes]
         return clientes
         
  
+    def retorna_dados_busca(self, tipo):
+        if tipo == 'Cliente':
+            autopreenchimento = self.retorna_todos_clientes()
+        elif tipo == 'Carro':
+            autopreenchimento = self.retorna_todos_veiculos()
+        elif tipo == 'Motorista':
+            autopreenchimento = self.retorna_todos_motoristas()
+        elif tipo == 'Ordem de serviço' or tipo == 'Data' or tipo == '':
+            autopreenchimento = []
+         
+        return autopreenchimento
+
+        
+    def on_combo1_selected(self, value, entry_frame):
+        values = self.retorna_dados_busca(value)
+        # Clear the entry before populating it with new values
+        CTkScrollableDropdown(entry_frame, values=values, command=lambda e: entry_frame.insert(1, e),
+    autocomplete=True) # Using autocomplete  

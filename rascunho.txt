@@ -71,3 +71,46 @@ def preencher_automatico(self, entry):
 
         self.btn_cadastrar = ctk.CTkButton(master =self.frame_cadastro_veiculo, text= 'Cadastrar', width = 125, font=('Roboto', 12), corner_radius= 20, fg_color = 'gray', command = lambda: self.cadastrar_veiculo(self.modelo_veiculo_entry, self.placa_veiculo_entry, self.placa_veiculo_entry))                       
         self.btn_cadastrar.grid(row = 4, column = 1, padx = 10, pady = 10)       
+
+
+     # Lista de opções
+            self.selecionar_options_filtro = ctk.CTkOptionMenu(master = self.frame_os_abertas, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 225, font=('Roboto', 12),corner_radius=15)
+            self.selecionar_options_filtro.grid(row = 4, column = 0, padx = 0, pady = 5)
+            
+            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_abertas, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
+            self.selecionar_entry.grid(row = 5, column = 0, padx = 0, pady = 5)
+
+            # # Adicionando o autopreenchimento
+            CTkScrollableDropdown(self.selecionar_entry, values= self.retorna_dados_busca(self.selecionar_options_filtro.get()), command=lambda e: self.selecionar_entry.insert(1, e),
+                      autocomplete=True)
+                      
+
+    def retorna_todos_veiculos(self):
+        veiculos = self.backend.retorna_veiculos()
+        veiculos = [veiculo[0] for veiculo in veiculos]
+        return veiculos
+    
+       
+    def retorna_todos_motoristas(self):
+        motoristas = self.backend.retorna_motoristas()
+        motoristas = [motorista[0] for motorista in motoristas]
+        return motoristas
+
+        
+    def retorna_todos_clientes(self):
+        clientes = self.backend.retorna_clientes()
+        clientes = [cliente[0] for cliente in clientes]
+        return clientes
+        
+ 
+    def retorna_dados_busca(self, tipo):
+        if tipo == 'Cliente':
+            autopreenchimento = self.retorna_todos_clientes()
+        elif tipo == 'Carro':
+            autopreenchimento = self.retorna_todos_veiculos()
+        elif tipo == 'Motorista':
+            autopreenchimento = self.retorna_todos_motoristas()
+        elif tipo == 'Ordem de serviço' or tipo == 'Data':
+            autopreenchimento = []
+        
+        return autopreenchimento
