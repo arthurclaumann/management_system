@@ -47,7 +47,7 @@ class OS():
         self.btn_os_fechada.grid(row = 6, column = 0, padx = 10, pady = 10)
 
         # Botão fechar_os
-        self.btn_fechar_os = ctk.CTkButton(master = self.frame_os, text= 'Fechar ordem de serviço', width = 300, font=('Roboto', 14), corner_radius= 20)                             
+        self.btn_fechar_os = ctk.CTkButton(master = self.frame_os, text= 'Fechar ordem de serviço', width = 300, font=('Roboto', 14), corner_radius= 20, command = self.tela_fechar_os)                             
         self.btn_fechar_os.grid(row = 7, column = 0, padx = 10, pady = 10)
 
         # Editar os
@@ -141,109 +141,201 @@ class OS():
         self.btn_voltar_cria_os.grid(row = 10, column = 1, padx = 1, pady = 10)
 
 
-    def ver_os_aberta(self):
+    def cria_frame_ver_os(self, frame, titulo, filtro, dados_db, frame_anterior, situacao):
         self.remover_tela_os()
-
-
         try:
-            os_abertas = self.backend.ver_os_aberta_db()
-
             ### Criando o frame
-            self.frame_os_abertas = ctk.CTkFrame(self.master, width = 450, height = 550)
-            self.frame_os_abertas.grid_columnconfigure(0, weight=1)
-            self.frame_os_abertas.grid(row = 0,  column = 0, pady = 30)
+            frame.grid_columnconfigure(0, weight=1)
+            frame.grid(row = 0,  column = 0, pady = 30, columnspan = 10)
 
            # frame scrollable 
-            self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_abertas, width = 725, height = 300)
+            self.scroll_frame = ctk.CTkScrollableFrame(frame, width = 725, height = 300)
             self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)
 
             # Widgets
             # 1. Título
-            self.lbtitle = ctk.CTkLabel(master = self.frame_os_abertas, text = 'Ordens de serviço abertas', font = ('Roboto', 14))
+            self.lbtitle = ctk.CTkLabel(master = frame, text = titulo, font = ('Roboto', 14))
+            self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
+
+            # 2. Criando a tabela
+            table = CTkTable(master= self.scroll_frame, values=dados_db, height=30, width=40, column=7)
+            table.grid(row=1, column=0, padx=0, pady=20)
+            
+        # # Lista de opções com autopreenchimento
+            # Título seleção
+            self.lbtitle = ctk.CTkLabel(master = frame, text = 'Selecione a opção:', font = ('Roboto', 14))
+            self.lbtitle.grid(row = 2, column = 0, padx = 0, pady = 0)
+            # # # Lista de opções com autopreenchimento
+            self.var1 = ctk.StringVar()         
+            self.selecionar_options_filtro = ctk.CTkComboBox(master = frame, variable=self.var1, values = filtro, width = 250, state = 'readonly', font=('Roboto', 12),corner_radius=15, command = lambda value: (self.on_combo1_selected(value, entry_frame = self.selecionar_entry)))
+            self.selecionar_options_filtro.grid(row = 3, column = 0, padx = 0, pady = 5)
+
+            self.selecionar_entry = ctk.CTkEntry(master = frame, placeholder_text='', width = 240, font=('Roboto', 12),corner_radius=15)
+            self.selecionar_entry.grid(row = 4, column = 0, padx = 0, pady = 5)
+    
+            CTkScrollableDropdown(self.selecionar_entry, values=[], command=lambda e: self.selecionar_entry.insert(1, e),
+                autocomplete=True) # Using autocomplete
+                
+            # Botão buscar
+            self.btn_buscar = ctk.CTkButton(master = frame, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(frame, self.selecionar_options_filtro.get(), self.selecionar_entry.get(), situacao, frame_anterior)), fg_color='gray')                       
+            self.btn_buscar.grid(row = 5, column = 0, padx = 5, pady = 5)
+        except:
+            if situacao == 'Aberta':
+                messagebox.showinfo(message='Ainda não há ordens de serviço abertas.')
+            elif situacao == 'Fechada':
+                messagebox.showinfo(message='Ainda não há ordens de serviço fechadas.')
+       
+        # Botão voltar
+        self.btn_voltar = ctk.CTkButton(master = frame, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(frame, self.tela_os)))                       
+        self.btn_voltar.grid(row = 10, column = 0, padx = 5, pady = 10)
+
+
+    def ver_os_aberta(self):
+        os_abertas = self.backend.ver_os_aberta_db()
+        self.frame_os_aberta = ctk.CTkFrame(self.master, width = 450, height = 550)
+        filtro=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista']
+
+        self.cria_frame_ver_os( self.frame_os_aberta, 'Ordens de serviço abertas', filtro, os_abertas, self.ver_os_aberta, 'Aberta')
+
+
+    def ver_os_fechada(self):
+        os_fechadas = self.backend.ver_os_fechada_db()
+        self.frame_os_fechada = ctk.CTkFrame(self.master, width = 450, height = 550)
+        filtro=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista']
+        self.cria_frame_ver_os(self.frame_os_fechada,'Ordens de serviço fechadas', filtro, os_fechadas, self.ver_os_fechada, 'Fechada')
+
+
+    def tela_fechar_os(self):
+        self.remover_tela_os()
+        os_abertas = self.backend.ver_os_aberta_db()
+        try:
+            ### Criando o frame
+            self.frame_fechar_os = ctk.CTkFrame(self.master, width = 450, height = 550)
+            self.frame_fechar_os.grid_columnconfigure(0, weight=1)
+            self.frame_fechar_os.grid(row = 0,  column = 0, pady = 30, columnspan = 10)
+
+           # frame scrollable 
+            self.scroll_frame = ctk.CTkScrollableFrame(self.frame_fechar_os, width = 725, height = 300)
+            self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)
+
+            # Widgets
+            # 1. Título
+            self.lbtitle = ctk.CTkLabel(master = self.frame_fechar_os, text = 'Fechar ordem de serviço', font = ('Roboto', 14))
             self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
 
             # 2. Criando a tabela
             table = CTkTable(master= self.scroll_frame, values=os_abertas, height=30, width=40, column=7)
             table.grid(row=1, column=0, padx=0, pady=20)
-
-            # Opções de seleção
-            # Título seleção
-            self.lbtitle = ctk.CTkLabel(master = self.frame_os_abertas, text = 'Selecionar:', font = ('Roboto', 14))
-            self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 0)
-
-            # # # Lista de opções com autopreenchimento
-            self.var1 = ctk.StringVar()    
-            self.selecionar_options_filtro = ctk.CTkComboBox(master = self.frame_os_abertas, variable=self.var1, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 250, font=('Roboto', 12),corner_radius=15, command = lambda value: (self.on_combo1_selected(value, entry_frame=self.selecionar_entry)))
-            self.selecionar_options_filtro.grid(row = 4, column = 0, padx = 0, pady = 5)
-
-            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_abertas, placeholder_text='', width = 240, font=('Roboto', 12),corner_radius=15)
-            self.selecionar_entry.grid(row = 5, column = 0, padx = 0, pady = 5)
-
-            CTkScrollableDropdown(self.selecionar_entry, values=[], command=lambda e: self.selecionar_entry.insert(1, e),
-                      autocomplete=True) # Using autocomplete         
-
             
-              # Botão buscar
-            self.btn_buscar = ctk.CTkButton(master = self.frame_os_abertas, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(self.frame_os_abertas, self.selecionar_options_filtro, self.selecionar_entry,'Aberta', self.ver_os_aberta)), fg_color='gray')                       
-            self.btn_buscar.grid(row = 6, column = 0, padx = 5, pady = 5)
-
-        except:
-            messagebox.showinfo(message='Ainda não há ordens de serviço abertas.')
-
-        # Botão voltar
-        self.btn_voltar = ctk.CTkButton(master = self.frame_os_abertas, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_abertas, self.tela_os)))                       
-        self.btn_voltar.grid(row = 10, column = 0, padx = 5, pady = 10)
-
-
-    def ver_os_fechada(self):
-        self.remover_tela_os()
-
-        try:
-            os_fechadas = self.backend.ver_os_fechada_db()
-
-            ### Criando o frame
-            self.frame_os_fechada = ctk.CTkFrame(self.master, width = 450, height = 550)
-            self.frame_os_fechada.grid_columnconfigure(0, weight=1)
-            self.frame_os_fechada.grid(row = 0,  column = 0, pady = 30)
-
-           # frame scrollable 
-            self.scroll_frame = ctk.CTkScrollableFrame(self.frame_os_fechada, width = 725, height = 300)
-            self.scroll_frame.grid(row = 1, column = 0, padx= 5, pady =5)
-
-            # widgets
-            # 1. Título
-            self.lbtitle = ctk.CTkLabel(master = self.frame_os_fechada, text = 'Ordens de serviço fechadas', font = ('Roboto', 14))
-            self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
-
-            # 2. Criando a tabela
-            table = CTkTable(master=  self.scroll_frame, values=os_fechadas, height=30, width=40)
-            table.grid(row=1, column=0, padx=0, pady=20)
-
-            # 3. Opções de seleção
+        # # Lista de opções com autopreenchimento
             # Título seleção
-            self.lbtitle = ctk.CTkLabel(master = self.frame_os_fechada, text = 'Selecionar:', font = ('Roboto', 14))
-            self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 0)
+            self.lbtitle = ctk.CTkLabel(master = self.frame_fechar_os, text = 'Digite a ordem de serviço:', font = ('Roboto', 14))
+            self.lbtitle.grid(row = 2, column = 0, padx = 0, pady = 0)
 
-            # Lista de opções com autopreenchimento
-            self.var1 = ctk.StringVar()
-            self.selecionar_options_filtro = ctk.CTkOptionMenu(master = self.frame_os_fechada, variable = self.var1, values=['Ordem de serviço', 'Data', 'Cliente', 'Carro', 'Motorista'], width = 225, font=('Roboto', 12),corner_radius=15, command = lambda value: (self.on_combo1_selected(value, self.selecionar_entry)))
-            self.selecionar_options_filtro.grid(row = 4, column = 0, padx = 0, pady = 5)
-            
-            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_fechada, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
-            self.selecionar_entry.grid(row = 5, column = 0, padx = 0, pady = 5)
-
-            self.selecionar_entry = ctk.CTkEntry(master = self.frame_os_fechada, placeholder_text='', width = 200, font=('Roboto', 12),corner_radius=15)
-
+            # # # Entrada da ordem de serviço
+            self.selecionar_entry = ctk.CTkEntry(master = self.frame_fechar_os, placeholder_text='Num. Ordem de serviço', width = 240, font=('Roboto', 12),corner_radius=15)
+            self.selecionar_entry.grid(row = 3, column = 0, padx = 0, pady = 5)
+                
             # Botão buscar
-            self.btn_buscar = ctk.CTkButton(master = self.frame_os_fechada, text= 'Buscar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.selecionar_os(self.frame_os_fechada, self.selecionar_options_filtro, self.selecionar_entry, 'Fechada', self.ver_os_fechada)), fg_color='gray')                       
-            self.btn_buscar.grid(row = 6, column = 0, padx = 5, pady = 5)
-
+            self.btn_selecionar = ctk.CTkButton(master = self.frame_fechar_os, text= 'Selecionar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.tela_fechamento_os(self.frame_fechar_os, self.selecionar_entry)), fg_color='gray')                       
+            self.btn_selecionar.grid(row = 5, column = 0, padx = 5, pady = 5)
         except:
-            messagebox.showinfo(message='Ainda não há ordens de serviço fechadas.')
+            messagebox.showinfo(message='Ainda não há ordens de serviço abertas.') 
 
         # Botão voltar
-        self.btn_voltar = ctk.CTkButton(master = self.frame_os_fechada, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_os_fechada, self.tela_os)))                       
-        self.btn_voltar.grid(row = 7, column = 0, padx = 5, pady = 30)
+        self.btn_voltar = ctk.CTkButton(master = self.frame_fechar_os, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_fechar_os, self.tela_os)))                       
+        self.btn_voltar.grid(row = 10, column = 0, padx = 5, pady = 10)
+        
+
+    def tela_fechamento_os(self, frame, valor):
+        self.limpa_frame(frame)
+        resultado_filtro = self.filtro_registros_os('Ordem de serviço', valor.get(), 'Aberta')
+            ### Criando o frame
+        self.frame_fechando_os = ctk.CTkFrame(self.master, width = 500, height = 600)
+        self.frame_fechando_os.grid_columnconfigure(0, weight=1)
+        self.frame_fechando_os.grid(row = 0,  column = 0, pady = 30, columnspan = 10)
+
+        # 1. Título
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Fechar ordem de serviço', font = ('Roboto', 18), justify = 'center')
+        self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10, columnspan = 2)
+        # print(resultado_filtro[0][1])
+
+        # ADICIONAR AQUI OS OUTROS ELEMENTOS PARA O PREENCHIMENTO
+        # Título seleção
+        # N. Ordem de serviço
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Ordem de serviço:', font = ('Roboto', 14), corner_radius=15, justify = 'center')
+        self.lbtitle.grid(row = 1, column = 0, padx = 0, pady = 5)
+
+        self.os_entry = ctk.CTkEntry(master = self.frame_fechando_os, placeholder_text=f'{resultado_filtro[0][0]}', width = 240, font=('Roboto', 12),corner_radius=15, justify = 'center', takefocus = 0, height=25)
+        self.os_entry.grid(row = 1, column = 1, padx = 0, pady = 5)
+        self.os_entry.configure(state='disabled')
+
+        # Data
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Data:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 2, column = 0, padx = 0, pady = 5)
+        self.data_entry = ctk.CTkEntry(master = self.frame_fechando_os, placeholder_text=f'{resultado_filtro[0][2]}', width = 240, font=('Roboto', 12),corner_radius=15, justify = 'center', takefocus = 0, height=25)
+        self.data_entry.grid(row = 2, column = 1, padx = 0, pady = 5)  
+        self.data_entry.configure(state='disabled')
+        
+        # Cliente
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Cliente:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 3, column = 0, padx = 0, pady = 5)
+        self.cliente_entry = ctk.CTkEntry(master = self.frame_fechando_os, placeholder_text=f'{resultado_filtro[0][3]}', width = 240, font=('Roboto', 12),corner_radius=15, justify = 'center', takefocus = 0, height=25)
+        self.cliente_entry.grid(row = 3, column = 1, padx = 0, pady = 5)       
+        self.cliente_entry.configure(state='disabled')
+
+        # Veículo
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Veículo:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 4, column = 0, padx = 0, pady = 5)
+        self.veiculo_entry = ctk.CTkEntry(master = self.frame_fechando_os, placeholder_text=f'{resultado_filtro[0][4]}', width = 240, font=('Roboto', 12),corner_radius=15, justify = 'center', takefocus = 0, height=25)
+        self.veiculo_entry.grid(row = 4, column = 1, padx = 0, pady = 5)   
+        self.veiculo_entry.configure(state='disabled')
+
+        # # Motorista
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Motorista:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 5, column = 0, padx = 0, pady = 5)
+        self.motorista_entry = ctk.CTkEntry(master = self.frame_fechando_os, placeholder_text=f'{resultado_filtro[0][5]}', width = 240, font=('Roboto', 12),corner_radius=15, justify = 'center', takefocus = 0, height=25)
+        self.motorista_entry.grid(row = 5, column = 1, padx = 0, pady = 5)
+        self.motorista_entry.configure(state='disabled')
+
+        # # Serviço
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Serviço:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 6, column = 0, padx = 0, pady = 5)
+        self.servico_entry = ctk.CTkEntry(master = self.frame_fechando_os, placeholder_text=f'{resultado_filtro[0][6]}', width = 240, font=('Roboto', 12),corner_radius=15, justify = 'center', takefocus = 0, height=25)
+        self.servico_entry.grid(row = 6, column = 1, padx = 0, pady = 5)
+        self.servico_entry.configure(state='disabled')
+
+        # # Receita
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Receita:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 7, column = 0, padx = 0, pady = 5)
+        self.receita_entry = ctk.CTkEntry(master = self.frame_fechando_os, placeholder_text = '', width = 240, font=('Roboto', 12),corner_radius=15, justify = 'center', takefocus = 0, height=25)
+        self.receita_entry.grid(row = 7, column = 1, padx = 0, pady = 5)
+
+        # # Cod. Receita
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Cod. Receita:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 8, column = 0, padx = 0, pady = 5)
+        self.cod_receita_entry = ctk.CTkComboBox(master=self.frame_fechando_os, values=["Comissão hotel", "Comissão venda"], width=250, font=('Roboto', 12), corner_radius=12, justify = 'center')
+        self.cod_receita_entry.grid(row = 8, column = 1, padx = 0, pady = 5)
+
+        # # Despesa
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Despesa:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 9, column = 0, padx = 0, pady = 5)
+        self.despesa_entry = ctk.CTkEntry(master = self.frame_fechando_os, placeholder_text = '', width = 240, font=('Roboto', 12),corner_radius=15, justify = 'center', takefocus = 0, height=25)
+        self.despesa_entry.grid(row = 9, column = 1, padx = 0, pady = 5)
+
+        # # Cod. Despesa
+        self.lbtitle = ctk.CTkLabel(master = self.frame_fechando_os, text = 'Cod. Despesa:', font = ('Roboto', 14))
+        self.lbtitle.grid(row = 10, column = 0, padx = 0, pady = 5)
+        self.cod_despesa_entry = ctk.CTkComboBox(master=self.frame_fechando_os, values=["Combustivel", "Alimentação"], width=250, font=('Roboto', 12), corner_radius=12, justify = 'center')
+        self.cod_despesa_entry.grid(row = 10, column = 1, padx = 0, pady = 5)
+
+        # Botão Finalizar --------
+        self.btn_finalizar = ctk.CTkButton(master = self.frame_fechando_os, text= 'Finalizar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_fechando_os, self.tela_os)))                         
+        self.btn_voltar.grid(row = 11, column = 1, padx = 5, pady = 10)
+
+        # Botão voltar
+        self.btn_voltar = ctk.CTkButton(master = self.frame_fechando_os, text= 'Voltar', width = 150, font=('Roboto', 14), corner_radius= 20, command = lambda: (self.voltar_tela_os(self.frame_fechando_os, self.tela_os)))                       
+        self.btn_voltar.grid(row = 12, column = 1, padx = 5, pady = 10)
 
 
     def selecionar_os(self, frame, criterio, valor, situacao, frame_anterior):
@@ -275,8 +367,8 @@ class OS():
 
 
     def filtro_registros_os(self, selecao, valor, situacao):
-        criterio = selecao.get()
-        valor = valor.get()
+        criterio = selecao
+        valor = valor
 
         # Mapeia o critério selecionado para a coluna correspondente no banco de dados
         mapeamento_colunas = {
@@ -296,11 +388,28 @@ class OS():
 
         return resultado_busca
 
+    def fechar_os(self):
+        pass
+    # def fechar_os(self, frame, criterio, os):
+    #     self.limpa_frame(frame)
+    #     situacao = 'Aberta'
+    #     resultado_filtro = self.filtro_registros_os(criterio, os, situacao)
+
+
+
+    #     ### Criando o frame
+    #     self.fechar_frame = ctk.CTkFrame(self.master, width = 450, height = 550)
+    #     self.fechar_frame.grid_columnconfigure(0, weight=1)
+    #     self.fechar_frame.grid(row = 0,  column = 0, pady = 30)
+    #     ### Criando o frame
+    #         # Widgets
+    #         # 1. Título
+    #     self.lbtitle = ctk.CTkLabel(master = frame, text = 'Fechamento de ordem de serviço', font = ('Roboto', 14))
+    #     self.lbtitle.grid(row = 0, column = 0, padx = 0, pady = 10)
+        
     def editar_os(self, num_os):
         pass
 
-    def fechar_os(self, os):
-        pass
 
     def voltar_menu(self):
         self.remover_tela_os()

@@ -27,11 +27,11 @@ class Login():
         self.lbtitle.grid(row = 0, column = 0, padx = 10, pady = 10)
 
         # Usuario
-        self.username_entry = ctk.CTkEntry(master = self.frame_login, placeholder_text= 'Nome de usuário', width = 300, font=('Roboto', 14),corner_radius=15)
+        self.username_entry = ctk.CTkEntry(master = self.frame_login, placeholder_text= 'Nome de usuário', width = 300, font=('Roboto', 14),corner_radius=15, justify = 'center')
         self.username_entry.grid(row = 1, column = 0, padx = 10, pady = 10)
     
         # Senha
-        self.pwd_entry = ctk.CTkEntry(master = self.frame_login, placeholder_text= 'Senha', show = '*', width = 300, font=('Roboto', 14),corner_radius=20)
+        self.pwd_entry = ctk.CTkEntry(master = self.frame_login, placeholder_text= 'Senha', show = '*', width = 300, font=('Roboto', 14),corner_radius=20, justify = 'center')
         self.pwd_entry.grid(row = 2, column = 0, padx = 10, pady = 10)
     
         # # Ver senha
@@ -46,7 +46,7 @@ class Login():
         self.span = ctk.CTkLabel(master = self.frame_login, text = 'Não tem conta? Registre-se', font=('Roboto', 14))
         self.span.grid(row = 5, column = 0, padx = 10, pady = 10)
 
-        self.btn_cadastro = ctk.CTkButton(master = self.frame_login, text = 'Fazer cadastro', font=('Roboto', 14), fg_color = 'green', command = self.tela_de_cadastro)
+        self.btn_cadastro = ctk.CTkButton(master = self.frame_login, text = 'Fazer cadastro', font=('Roboto', 14), fg_color = 'green', command = self.tela_de_cadastro, corner_radius=20)
         self.btn_cadastro.grid(row = 6, column = 0, padx = 10, pady = 10)
     
     def tela_de_cadastro(self):
@@ -66,22 +66,22 @@ class Login():
 
         # Criando widgets de cadastro
         # Usuario
-        self.username_cadastro_entry = ctk.CTkEntry(master = self.frame_cadastro, placeholder_text= 'Nome de usuário', width = 300, font=('Roboto', 14),corner_radius=15)
+        self.username_cadastro_entry = ctk.CTkEntry(master = self.frame_cadastro, placeholder_text= 'Nome de usuário', width = 300, font=('Roboto', 14),corner_radius=15, justify = 'center')
         self.username_cadastro_entry.grid(row = 1, column = 0, padx = 10, pady = 5)
     
         # Senha
-        self.pwd_cadastro_entry = ctk.CTkEntry(master = self.frame_cadastro, placeholder_text= 'Senha', show = '*', width = 300, font=('Roboto', 14),corner_radius=20)
+        self.pwd_cadastro_entry = ctk.CTkEntry(master = self.frame_cadastro, placeholder_text= 'Senha', show = '*', width = 300, font=('Roboto', 14),corner_radius=20, justify = 'center')
         self.pwd_cadastro_entry.grid(row = 2, column = 0, padx = 10, pady = 5)
 
         # confirma senha
-        self.confirma_senha_cadastro_entry = ctk.CTkEntry(master = self.frame_cadastro, placeholder_text= 'Confirme a senha', show = '*', width = 300, font=('Roboto', 14),corner_radius=15)
+        self.confirma_senha_cadastro_entry = ctk.CTkEntry(master = self.frame_cadastro, placeholder_text= 'Confirme a senha', show = '*', width = 300, font=('Roboto', 14),corner_radius=15, justify = 'center')
         self.confirma_senha_cadastro_entry.grid(row = 3, column = 0, padx = 10, pady = 5)
 
         # Ver senha
-        self.ver_senha = ctk.CTkCheckBox(master = self.frame_cadastro, text = 'Mostrar senha' , font=('Roboto', 12), corner_radius=15)
+        self.ver_senha = ctk.CTkCheckBox(master = self.frame_cadastro, text = 'Mostrar senha' , font=('Roboto', 12), corner_radius=15, checkbox_height=15, checkbox_width=15)
         self.ver_senha.grid(row = 4, column = 0, pady = 5)
 
-        self.btn_cadastrar_user = ctk.CTkButton(master = self.frame_cadastro, text = 'Cadastrar', font=('Roboto', 14), fg_color = 'green', command=lambda: self.backend.cadastrar_usuario(
+        self.btn_cadastrar_user = ctk.CTkButton(master = self.frame_cadastro, corner_radius=15, text = 'Cadastrar', font=('Roboto', 14), fg_color = 'green', command=lambda: self.backend.cadastrar_usuario(
                                                 self.username_cadastro_entry.get(),
                                                 self.pwd_cadastro_entry.get(),
                                                 self.confirma_senha_cadastro_entry.get(),
@@ -89,7 +89,7 @@ class Login():
         self.btn_cadastrar_user.grid(row = 5, column = 0, padx = 10, pady = 5)
         
 
-        self.btn_login_back = ctk.CTkButton(master = self.frame_cadastro, text = 'Voltar', font=('Roboto', 14), fg_color = '#444', hover='#333',command = self.tela_login) 
+        self.btn_login_back = ctk.CTkButton(master = self.frame_cadastro, text = 'Voltar', font=('Roboto', 14), fg_color = '#444', hover='#333',command = self.tela_login, corner_radius=15) 
         self.btn_login_back.grid(row = 6, column = 0, padx = 10, pady =10)
 
 
