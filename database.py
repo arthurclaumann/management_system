@@ -237,6 +237,54 @@ class Backend():
         # print('Tabela criada com sucesso')
         self.desconecta_db()
 
+    def finalizar_os_db(self, num_os, receita, cod_receita, despesa, cod_despesa):
+        num_os = int(num_os)
+        self.receita = receita
+        self.cod_receita = cod_receita
+        self.despesa = despesa
+        self.cod_despesa = cod_despesa
+        self.situacao = 'Fechada'
+
+        try:
+            self.conecta_db()
+            self.cursor.execute("""
+                            UPDATE ordem_servico 
+                            SET situacao = 'Fechada', receita = :receita, cod_receita = :cod_receita, despesa = :despesa, cod_despesa = :cod_despesa
+                            WHERE os = :num_os
+                        """, {'receita': self.receita, 'cod_receita': self.cod_receita, 'despesa': self.despesa, 'cod_despesa': self.cod_despesa, 'num_os': num_os})
+
+            self.conn.commit()
+            messagebox.showinfo(title='', message = 'Ordem de serviço finalizada com sucesso.')
+            self.desconecta_db()
+        except:
+            messagebox.showerror(title = '', message='Erro no processo de finalização.')
+            self.desconecta_db()
+
+
+    def editar_os_db(self, num_os, receita, cod_receita, despesa, cod_despesa):
+        num_os = int(num_os)
+        self.receita = receita
+        self.cod_receita = cod_receita
+        self.despesa = despesa
+        self.cod_despesa = cod_despesa
+
+        try:
+            self.conecta_db()
+            self.cursor.execute("""
+                            UPDATE ordem_servico 
+                            SET receita = :receita, cod_receita = :cod_receita, despesa = :despesa, cod_despesa = :cod_despesa
+                            WHERE os = :num_os
+                        """, {'receita': self.receita, 'cod_receita': self.cod_receita, 'despesa': self.despesa, 'cod_despesa': self.cod_despesa, 'num_os': num_os})
+
+            self.conn.commit()
+            messagebox.showinfo(title='', message = 'Ordem de serviço editada com sucesso.')
+            self.desconecta_db()
+        except:
+            messagebox.showerror(title = '', message='Erro ao editar.')
+            self.desconecta_db()
+
+        
+
 
     def cadastrar_os_aberta_db(self, data, cliente, carro, motorista, servico):
         self.data = data
@@ -334,3 +382,21 @@ class Backend():
             self.desconecta_db()
         
         
+    def retorna_ultima_os_db(self):
+        try:
+            self.conecta_db()
+
+            self.cursor.execute(f"SELECT num_os FROM ordem_servico ORDER BY num_os DESC LIMIT 1")
+
+            self.verifica_dados = self.cursor.fetchall()
+
+            if not self.verifica_dados:
+                messagebox.showinfo(title='', message='Nenhuma ordem de serviço encontrada')
+                return None
+            else:
+                return self.verifica_dados
+        except:
+            print("Não foi possível encontrar a ordem de serviço.")
+
+        finally:
+            self.desconecta_db()

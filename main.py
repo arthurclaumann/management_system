@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 from database import Backend
 from login import Login
-# from menu_app import App_menu
+from menu_app import App_menu
 
 
 class Application(ctk.CTk):
@@ -13,15 +13,11 @@ class Application(ctk.CTk):
         self.configuracoes_janela_inicial()
 
         self.backend = Backend()  # para instanciar o Backend
-        # Criar nova classe de login e cadastro, modularizar e então instanciar aqui
+        # # Criar nova classe de login e cadastro, modularizar e então instanciar aqui
         
         self.login_screen = Login(self, self.backend) # pode ser necessário passar como argumento a função para limpar a tela e entrar no menu
         self.login_screen.tela_login()
-        # self.menu = App_menu(self, self.backend, self.login_screen)
 
-        # self.menu.tela_menu()
-        # self.backend.cria_tabela()
-        # self.backend.cria_tabela_os()
 
     def tema(self):
         # definindo a aparência e cor do tema
@@ -33,6 +29,8 @@ class Application(ctk.CTk):
         self.geometry("1080x600")
         self.resizable(True, True) # para evitar que altere o tamanho e os objetos internos percam seu tamanho
         self.grid_columnconfigure(0, weight=1)
+
+
 
 if __name__ == '__main__':
     app = Application()
